@@ -12,6 +12,7 @@ import (
 	"strings"
 )
 
+// Verbose allows to get output for HTTP communcation via logging
 var Verbose = false
 
 var jar = createJar()
