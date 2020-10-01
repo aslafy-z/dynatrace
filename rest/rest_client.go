@@ -6,11 +6,10 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
-
-	"github.com/dtcookie/dynatrace/libdtlog"
 )
 
 var Verbose = false
@@ -79,7 +78,7 @@ func (client *Client) GET(path string, expectedStatusCode int) ([]byte, error) {
 
 	url := client.getURL(path)
 	if Verbose {
-		dtlog.Println(fmt.Sprintf("GET %s", url))
+		log.Println(fmt.Sprintf("GET %s", url))
 	}
 	if request, err = http.NewRequest(http.MethodGet, url, nil); err != nil {
 		return make([]byte, 0), err
@@ -146,8 +145,8 @@ func (client *Client) send(path string, method string, payload interface{}, expe
 
 	url := client.getURL(path)
 	if Verbose {
-		dtlog.Println(fmt.Sprintf("%s %s", strings.ToUpper(method), url))
-		dtlog.Println("  Request Body: " + string(requestbody))
+		log.Println(fmt.Sprintf("%s %s", strings.ToUpper(method), url))
+		log.Println("  Request Body: " + string(requestbody))
 	}
 	if request, err = http.NewRequest(method, url, bytes.NewReader(requestbody)); err != nil {
 		return nil, err
@@ -170,7 +169,7 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 	defer httpResponse.Body.Close()
 
 	if Verbose {
-		dtlog.Println(fmt.Sprintf("  %d %s", httpResponse.StatusCode, http.StatusText(httpResponse.StatusCode)))
+		log.Println(fmt.Sprintf("  %d %s", httpResponse.StatusCode, http.StatusText(httpResponse.StatusCode)))
 	}
 
 	if onResponse != nil {
@@ -185,7 +184,7 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 			return nil, finalError
 		}
 		if Verbose && (body != nil) && len(body) > 0 {
-			dtlog.Println("  Response Body: " + string(body))
+			log.Println("  Response Body: " + string(body))
 		}
 		return body, finalError
 	}
@@ -193,7 +192,7 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 		return nil, err
 	}
 	if Verbose && (body != nil) && len(body) > 0 {
-		dtlog.Println("  Response Body: " + string(body))
+		log.Println("  Response Body: " + string(body))
 	}
 	return body, nil
 }
