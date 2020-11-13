@@ -6,6 +6,7 @@ import (
 
 	resterrors "github.com/dtcookie/dynatrace/apis/errors"
 	"github.com/dtcookie/dynatrace/rest"
+	"github.com/dtcookie/dynatrace/rest/credentials"
 )
 
 // API TODO: documentation
@@ -14,7 +15,7 @@ type API struct {
 }
 
 // NewAPI TODO: documentation
-func NewAPI(config *rest.Config, credentials *rest.Credentials) *API {
+func NewAPI(config *rest.Config, credentials credentials.Credentials) *API {
 	return &API{
 		client: rest.NewClient(config, credentials),
 	}

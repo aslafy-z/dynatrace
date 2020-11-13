@@ -10,20 +10,20 @@ import (
 	"strconv"
 
 	"github.com/dtcookie/dynatrace/log"
-	"github.com/dtcookie/dynatrace/rest"
+	"github.com/dtcookie/dynatrace/rest/credentials"
 )
 
 // Config TODO: documentation
 type Config struct {
-	ListenPort  int              `json:"listenPort,omitempty"`
-	Credentials rest.Credentials `json:"credentials,omitempty"`
-	NoProxy     bool             `json:"noproxy,omitempty"`
-	Insecure    bool             `json:"insecure,omitempty"`
-	Verbose     bool             `json:"verbose,omitempty"`
+	ListenPort  int                     `json:"listenPort,omitempty"`
+	Credentials credentials.Credentials `json:"credentials,omitempty"`
+	NoProxy     bool                    `json:"noproxy,omitempty"`
+	Insecure    bool                    `json:"insecure,omitempty"`
+	Verbose     bool                    `json:"verbose,omitempty"`
 }
 
 // NewConfig TODO: documentation
-func NewConfig(listenPort int, credentials rest.Credentials) *Config {
+func NewConfig(listenPort int, credentials credentials.Credentials) *Config {
 	return &Config{ListenPort: listenPort, Credentials: credentials}
 }
 
@@ -33,7 +33,7 @@ func ParseConfig(flagset *flag.FlagSet) (*Config, error) {
 	var config Config
 	var err error
 
-	config = Config{ListenPort: 0, Credentials: rest.Credentials{}}
+	config = Config{ListenPort: 0, Credentials: nil}
 
 	readConfigFromEnv(&config)
 	if err = readConfigFromFlags(&config, flagset, args); err != nil {
@@ -44,17 +44,9 @@ func ParseConfig(flagset *flag.FlagSet) (*Config, error) {
 		return nil, errors.New("no listen port specified")
 	}
 
-	if config.Credentials.APIToken == "" || config.Credentials.APIBaseURL == "" {
+	if config.Credentials == nil || config.Credentials.APIToken == "" || config.Credentials.APIBaseURL == "" {
 		log.Info("API Token or API Base URL not specified - fetching problem details disabled")
 	}
-
-	// if config.Credentials.APIToken == "" {
-	// 	return nil, errors.New("no api token specified")
-	// }
-
-	// if config.Credentials.APIBaseURL == "" {
-	// 	return nil, errors.New("no api base url specified")
-	// }
 
 	return &config, nil
 }
