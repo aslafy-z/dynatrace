@@ -9,6 +9,8 @@ import (
 type Credentials interface {
 	// Authenticate modifies a given HTTP Request in order to ensure proper authentication on the server side
 	Authenticate(request *http.Request) error
+	// Configured tells whether actual values for authentication are available
+	Configured() bool
 }
 
 type credentials struct {
@@ -24,4 +26,9 @@ func New(apiToken string) Credentials {
 func (credentials *credentials) Authenticate(request *http.Request) error {
 	request.Header.Set("Authorization", "Api-Token "+credentials.APIToken)
 	return nil
+}
+
+// Configured tells whether actual values for authentication are available
+func (credentials *credentials) Configured() bool {
+	return credentials.APIToken != ""
 }
