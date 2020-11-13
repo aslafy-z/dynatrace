@@ -16,7 +16,7 @@ type credentials struct {
 }
 
 // New creates a new instance that is able to modify a given HTTP Reqest in orer to ensure proper authentication on the server side
-func New(apiBaseURL string, apiToken string) Credentials {
+func New(apiToken string) Credentials {
 	return &credentials{APIToken: apiToken}
 }
 
