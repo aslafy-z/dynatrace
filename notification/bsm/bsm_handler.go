@@ -39,7 +39,7 @@ func (handler *BSMhandler) Handle(event *notification.ProblemEvent) error {
 		if strings.HasPrefix(barcode, "APP=") {
 			idxOpenBrace := strings.LastIndex(barcode, "(")
 			if (idxOpenBrace > 0) && (idxOpenBrace < len(barcode)) {
-				barcode = barcode[idxOpenBrace+1 : len(barcode)]
+				barcode = barcode[idxOpenBrace+1:]
 				if strings.HasSuffix(barcode, ")") {
 					barcode = barcode[0 : len(barcode)-1]
 					bcode = barcode
