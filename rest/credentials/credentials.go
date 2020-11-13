@@ -12,16 +12,12 @@ type Credentials interface {
 }
 
 type credentials struct {
-	APIBaseURL string `json:"api-base-url,omitempty"`
-	APIToken   string `json:"api-token,omitempty"`
+	APIToken string `json:"api-token,omitempty"`
 }
 
 // New creates a new instance that is able to modify a given HTTP Reqest in orer to ensure proper authentication on the server side
 func New(apiBaseURL string, apiToken string) Credentials {
-	return &credentials{
-		APIBaseURL: apiBaseURL,
-		APIToken:   apiToken,
-	}
+	return &credentials{APIToken: apiToken}
 }
 
 // Authenticate modifies a given HTTP Request in order to ensure proper authentication on the server side

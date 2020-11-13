@@ -10,6 +10,8 @@ import (
 	"net/http"
 	"net/http/cookiejar"
 	"strings"
+
+	"github.com/dtcookie/dynatrace/rest/credentials"
 )
 
 // Verbose allows to get output for HTTP communcation via logging
@@ -25,15 +27,17 @@ func createJar() *cookiejar.Jar {
 // Client TODO: documentation
 type Client struct {
 	config      *Config
-	credentials *Credentials
+	credentials credentials.Credentials
 	httpClient  *http.Client
+	apiBaseURL  string
 }
 
 // NewClient TODO: documentation
-func NewClient(config *Config, credentials *Credentials) *Client {
+func NewClient(config *Config, apiBaseURL string, credentials credentials.Credentials) *Client {
 	client := Client{}
 	client.credentials = credentials
 	client.config = config
+	client.apiBaseURL = apiBaseURL
 	client.httpClient = createHTTPClient(config)
 	return &client
 }
@@ -61,7 +65,7 @@ func createHTTPClient(config *Config) *http.Client {
 }
 
 func (client *Client) getURL(path string) string {
-	apiBaseURL := client.credentials.APIBaseURL
+	apiBaseURL := client.apiBaseURL
 	if !strings.HasSuffix(apiBaseURL, "/") {
 		apiBaseURL = apiBaseURL + "/"
 	}
