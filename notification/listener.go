@@ -36,8 +36,8 @@ func (listener *listener) listen() {
 	var clusterVersion string
 	var err error
 
-	if len(listener.config.Credentials.APIBaseURL) > 0 && len(listener.config.Credentials.APIToken) > 0 {
-		clusterAPI := cluster.NewAPI(listener.restConfig, &listener.config.Credentials)
+	if len(listener.config.APIBaseURL) > 0 && listener.config.Credentials != nil && listener.config.Credentials.Configured() {
+		clusterAPI := cluster.NewAPI(listener.restConfig, listener.config.APIBaseURL, listener.config.Credentials)
 		if clusterVersion, err = clusterAPI.Get(); err != nil {
 			log.Error(err)
 			return
@@ -110,11 +110,11 @@ func (listener *listener) handleHTTP(w http.ResponseWriter, request *http.Reques
 		return
 	}
 
-	if len(listener.config.Credentials.APIBaseURL) > 0 && len(listener.config.Credentials.APIToken) > 0 {
+	if len(listener.config.APIBaseURL) > 0 && listener.config.Credentials != nil && listener.config.Credentials.Configured() {
 		if listener.config.Verbose {
 			log.Info("querying for problem details")
 		}
-		problemAPI := problems.NewAPI(listener.restConfig, &listener.config.Credentials)
+		problemAPI := problems.NewAPI(listener.restConfig, listener.config.APIBaseURL, listener.config.Credentials)
 		go func(problemAPI *problems.API) {
 			var problem *problems.Problem
 			numAttempts := 0

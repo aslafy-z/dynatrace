@@ -1,6 +1,14 @@
 github.com/dtcookie/dynatrace v1.0.4 h1:JR0baSMhL8b0iH6PX2wPZ2AkIQAkmcAhaZx46hTVjQs=
 github.com/dtcookie/dynatrace v1.0.4/go.mod h1:79iW4/ZWSbIc7PlX+0WZ+8HV9sbPwM37FbSmCotx7n8=
+github.com/dtcookie/dynatrace/apis/cluster v0.0.0-20201113090652-30918c45bba6 h1:oNKdXr8l/bDCRCTUj+YtGWe1HwuMrRP5Ji5/mizRn4A=
+github.com/dtcookie/dynatrace/apis/cluster v0.0.0-20201113090652-30918c45bba6/go.mod h1:IZm5udRwyqbc7MT6DUjjzItYIcnYULW4sOiT/53tw3k=
+github.com/dtcookie/dynatrace/apis/errors v1.0.5/go.mod h1:uDa0mHfj/2wbfJJKJGSfviNAEJ2f68J4Vgmiv9+6/KI=
+github.com/dtcookie/dynatrace/apis/problems v1.0.0 h1:/4LvHjhqK6CSwucVKRi9cinny4JFcm1I3lWtxVBhOMQ=
+github.com/dtcookie/dynatrace/apis/problems v1.0.0/go.mod h1:XGAqNo5XgxHcHcboC+4dWXrw7KgWv9iuJno/V5IMTEo=
+github.com/dtcookie/dynatrace/http v1.0.8 h1:iYCaFJpJJ8vVSOZI6USFNrH+viMiz4v64fqS4WiwD20=
+github.com/dtcookie/dynatrace/http v1.0.8/go.mod h1:humskdrQQZ+RgUx5yqum5oLKz8T+203SBBgoorTWM2E=
 github.com/dtcookie/dynatrace/rest v1.0.4/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
-github.com/dtcookie/dynatrace/rest v1.0.7 h1:NEuE5lG3GeNEB+PcBbZNP3lAUTpW7OpohhrjECtHcdA=
 github.com/dtcookie/dynatrace/rest v1.0.7/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
+github.com/dtcookie/dynatrace/rest v1.0.11 h1:T3E2jFkwr6glV0yfUQI7V28vRzcPO6R+ppbr02zxfgU=
+github.com/dtcookie/dynatrace/rest v1.0.11/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
 github.com/dtcookie/dynatrace/rest/credentials v1.0.6 h1:CJAOugZ04R+xkMctkrVPn4KnJnmz8FF+of1WmIdtCVw=

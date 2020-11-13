@@ -5,6 +5,7 @@ import (
 
 	resterrors "github.com/dtcookie/dynatrace/apis/errors"
 	"github.com/dtcookie/dynatrace/rest"
+	"github.com/dtcookie/dynatrace/rest/credentials"
 )
 
 // API is able to make REST API Calls to the Users API of an
@@ -15,8 +16,8 @@ type API struct {
 
 // NewAPI creates a preconfigured API for accessing the Users API
 // of an OnPremise Dynatrace Cluster
-func NewAPI(config *rest.Config, credentials *rest.Credentials) *API {
-	return &API{client: rest.NewClient(config, credentials)}
+func NewAPI(config *rest.Config, apiBaseURL string, credentials credentials.Credentials) *API {
+	return &API{client: rest.NewClient(config, apiBaseURL, credentials)}
 }
 
 // All queries for the currently configured users

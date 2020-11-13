@@ -20,6 +20,7 @@ type Config struct {
 	NoProxy     bool                    `json:"noproxy,omitempty"`
 	Insecure    bool                    `json:"insecure,omitempty"`
 	Verbose     bool                    `json:"verbose,omitempty"`
+	APIBaseURL  string                  `json:"apiBaseURL,omitempty"`
 }
 
 // NewConfig TODO: documentation
@@ -44,7 +45,7 @@ func ParseConfig(flagset *flag.FlagSet) (*Config, error) {
 		return nil, errors.New("no listen port specified")
 	}
 
-	if config.Credentials == nil || config.Credentials.APIToken == "" || config.Credentials.APIBaseURL == "" {
+	if config.APIBaseURL == "" || config.Credentials == nil || !config.Credentials.Configured() {
 		log.Info("API Token or API Base URL not specified - fetching problem details disabled")
 	}
 
@@ -61,11 +62,11 @@ func readConfigFromEnv(target *Config) {
 
 	apiBaseURL = os.Getenv("DT_API_BASE_URL")
 	if apiBaseURL != "" {
-		config.Credentials.APIBaseURL = apiBaseURL
+		config.APIBaseURL = apiBaseURL
 	}
 	apiToken = os.Getenv("DT_API_TOKEN")
 	if apiToken != "" {
-		config.Credentials.APIToken = apiToken
+		config.Credentials = credentials.New(apiToken)
 	}
 	sListenPort = os.Getenv("DT_LISTEN_PORT")
 	if sListenPort != "" {
@@ -98,12 +99,17 @@ func readConfigFromFlags(target *Config, parentFlags *flag.FlagSet, args []strin
 	flagSet.BoolVar(&configFromFlags.NoProxy, "noproxy", false, "")
 	flagSet.StringVar(&configFileName, "config", "", "")
 	flagSet.IntVar(&configFromFlags.ListenPort, "listen", 0, "")
-	flagSet.StringVar(&configFromFlags.Credentials.APIBaseURL, "api-base-url", "", "")
-	flagSet.StringVar(&configFromFlags.Credentials.APIToken, "api-token", "", "")
+	flagSet.StringVar(&configFromFlags.APIBaseURL, "api-base-url", "", "")
+	var apiToken string
+	flagSet.StringVar(&apiToken, "api-token", "", "")
 
 	flagSet.Usage = func() {}
 	if err = flagSet.Parse(args[1:]); err != nil {
 		return err
+	}
+
+	if apiToken != "" {
+		configFromFlags.Credentials = credentials.New(apiToken)
 	}
 
 	if configFileName != "" {
@@ -129,11 +135,11 @@ func adoptConfig(target *Config, source *Config) {
 	if source.Insecure {
 		target.Insecure = source.Insecure
 	}
-	if source.Credentials.APIBaseURL != "" {
-		target.Credentials.APIBaseURL = source.Credentials.APIBaseURL
+	if source.Credentials != nil && source.Credentials.Configured() {
+		target.Credentials = source.Credentials
 	}
-	if source.Credentials.APIToken != "" {
-		target.Credentials.APIToken = source.Credentials.APIToken
+	if source.APIBaseURL != "" {
+		target.APIBaseURL = source.APIBaseURL
 	}
 }
 
