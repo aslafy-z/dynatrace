@@ -1,0 +1,4 @@
+github.com/dtcookie/dynatrace/apis/errors v1.0.5 h1:hjMR4b6x2xNCPp5Oh30NKhjR5gyXk/dZMH2nuarV9W8=
+github.com/dtcookie/dynatrace/apis/errors v1.0.5/go.mod h1:uDa0mHfj/2wbfJJKJGSfviNAEJ2f68J4Vgmiv9+6/KI=
+github.com/dtcookie/dynatrace/rest v1.0.11 h1:T3E2jFkwr6glV0yfUQI7V28vRzcPO6R+ppbr02zxfgU=
+github.com/dtcookie/dynatrace/rest v1.0.11/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
