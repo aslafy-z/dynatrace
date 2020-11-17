@@ -3,7 +3,7 @@ package customservices
 import (
 	"encoding/json"
 
-	api "github.com/dtcookie/trace/api/config"
+	api "github.com/dtcookie/dynatrace/api/config"
 )
 
 // CustomService has no documentation

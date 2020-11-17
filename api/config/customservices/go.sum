@@ -2,5 +2,3 @@ github.com/dtcookie/dynatrace/api/config v1.0.0 h1:ehm8BeuEoGzwfOr0xrkaQPVrg0AYq
 github.com/dtcookie/dynatrace/api/config v1.0.0/go.mod h1:Xs0giyHjICPbjFEYJgNMU19xm7/+I6vXtDX5rKRvF30=
 github.com/dtcookie/dynatrace/rest v1.0.12 h1:H3yBBOSCbgyHUClZmuhQik7hmxsmXdcxFTWgBMAq9xI=
 github.com/dtcookie/dynatrace/rest v1.0.12/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
-github.com/dtcookie/trace/api/config v1.0.4 h1:xZXJF+596n6GK0555kJ0B0Sl+2BwM0A6qnLwV6scoRM=
-github.com/dtcookie/trace/api/config v1.0.4/go.mod h1:oWPqx2Svb6VYM/u6z66VftV04ThAr4vb8frpwtVL0Zc=
