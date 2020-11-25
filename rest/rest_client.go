@@ -126,6 +126,9 @@ func (client *Client) DELETE(path string, expectedStatusCode int) ([]byte, error
 	if err = client.credentials.Authenticate(request); err != nil {
 		return make([]byte, 0), err
 	}
+	if Verbose {
+		log.Println(fmt.Sprintf("%s %s", strings.ToUpper("DELETE"), url))
+	}
 
 	if httpResponse, err = client.httpClient.Do(request); err != nil {
 		return make([]byte, 0), err
@@ -188,8 +191,14 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 		if body, err = ioutil.ReadAll(httpResponse.Body); err != nil {
 			return nil, finalError
 		}
-		if Verbose && (body != nil) && len(body) > 0 {
-			log.Println("  Response Body: " + string(body))
+		if (body != nil) && len(body) > 0 {
+			if Verbose {
+				log.Println("  Response Body: " + string(body))
+			}
+			var env ErrorEnvelope
+			if err = json.Unmarshal(body, &env); err == nil {
+				finalError = &env.Error
+			}
 		}
 		return body, finalError
 	}
