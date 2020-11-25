@@ -41,7 +41,9 @@ func (mdt *MarkdownTile) AsAssignedEntitiesTile() *AssignedEntitiesTile {
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (mdt *MarkdownTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

@@ -41,7 +41,9 @@ func (aet *AssignedEntitiesTile) AsAssignedEntitiesTile() *AssignedEntitiesTile 
 	return aet
 }
 
+/*
 // AsGenericTile has not documentation
 func (aet *AssignedEntitiesTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

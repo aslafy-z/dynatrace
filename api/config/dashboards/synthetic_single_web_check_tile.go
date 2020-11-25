@@ -42,7 +42,9 @@ func (sswct *SyntheticSingleWebCheckTile) AsAssignedEntitiesTile() *AssignedEnti
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (sswct *SyntheticSingleWebCheckTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

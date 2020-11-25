@@ -43,7 +43,9 @@ func (fet *FilterableEntityTile) AsAssignedEntitiesTile() *AssignedEntitiesTile 
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (fet *FilterableEntityTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

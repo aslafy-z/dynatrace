@@ -1,9 +1,5 @@
 package dashboards
 
-import (
-	"encoding/json"
-)
-
 // Tile the configuration of a tile.
 // The actual set of fields depends on the type of the tile. See the description of the **tileType** field
 type Tile interface {
@@ -20,7 +16,7 @@ type Tile interface {
 	AsAssignedEntitiesWithMetricTile() *AssignedEntitiesWithMetricTile
 	AsAssignedEntitiesTile() *AssignedEntitiesTile
 	AsSyntheticSingleWebCheckTile() *SyntheticSingleWebCheckTile
-	AsGenericTile() *GenericTile
+	// AsGenericTile() *GenericTile
 	Initialize(*AbstractTile)
 	Implementors() []Tile
 }
@@ -124,6 +120,7 @@ func (at *AbstractTile) AsAssignedEntitiesTile() *AssignedEntitiesTile {
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (at *AbstractTile) AsGenericTile() *GenericTile {
 	return nil
@@ -234,3 +231,4 @@ func (gt *GenericTile) AsAssignedEntitiesTile() *AssignedEntitiesTile {
 func (gt *GenericTile) AsGenericTile() *GenericTile {
 	return gt
 }
+*/

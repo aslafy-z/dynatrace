@@ -41,7 +41,9 @@ func (cct *CustomChartingTile) AsAssignedEntitiesTile() *AssignedEntitiesTile {
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (cct *CustomChartingTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

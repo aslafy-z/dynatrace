@@ -46,7 +46,9 @@ func (usqt *UserSessionQueryTile) AsAssignedEntitiesTile() *AssignedEntitiesTile
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (usqt *UserSessionQueryTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/

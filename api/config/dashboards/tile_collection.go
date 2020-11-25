@@ -101,5 +101,5 @@ func newTyped(t TileType) Tile {
 	if p := mapping[t]; p != nil {
 		return reflect.New(reflect.TypeOf(p).Elem()).Interface().(Tile)
 	}
-	return new(GenericTile)
+	return new(AbstractTile)
 }

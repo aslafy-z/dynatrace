@@ -42,7 +42,9 @@ func (aewmt *AssignedEntitiesWithMetricTile) AsAssignedEntitiesTile() *AssignedE
 	return nil
 }
 
+/*
 // AsGenericTile has not documentation
 func (aewmt *AssignedEntitiesWithMetricTile) AsGenericTile() *GenericTile {
 	return nil
 }
+*/
