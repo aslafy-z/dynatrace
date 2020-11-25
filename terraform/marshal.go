@@ -114,6 +114,22 @@ func unOrderMap(m OrderedMap) map[string]interface{} {
 	return result
 }
 
+type sliceDerivator struct {
+	Values map[string][]interface{}
+}
+
+func (sd *sliceDerivator) Put(name string, value interface{}) {
+	if sd.Values == nil {
+		sd.Values = map[string][]interface{}{}
+	}
+	if values, found := sd.Values[name]; found {
+		values = append(values, value)
+		sd.Values[name] = values
+	} else {
+		sd.Values[name] = []interface{}{value}
+	}
+}
+
 func toMap(hint string, v interface{}, indent string) interface{} {
 	if v == nil {
 		return nil
@@ -130,14 +146,21 @@ func toMap(hint string, v interface{}, indent string) interface{} {
 		return &result
 	case reflect.Slice:
 		rv := reflect.ValueOf(v)
-
+		if rv.Type().Elem().Kind() == reflect.Interface {
+			deriv := sliceDerivator{}
+			for i := 0; i < rv.Len(); i++ {
+				elemTypeName := unCamel(unref(reflect.TypeOf(rv.Index(i).Interface())).Name())
+				v := toMap(fmt.Sprintf("%s[%d]", hint, i), rv.Index(i).Interface(), indent+"  ")
+				deriv.Put(elemTypeName, v)
+			}
+			return deriv
+		}
 		result := reflect.ValueOf([]interface{}{})
 		if !isPrimitiveType(rv.Type().Elem()) {
 			result = reflect.ValueOf(ResourceSlice{})
 		}
 
 		for i := 0; i < rv.Len(); i++ {
-			// fmt.Println(fmt.Sprintf("%s[%d]", hint, i))
 			v := reflect.ValueOf(toMap(fmt.Sprintf("%s[%d]", hint, i), rv.Index(i).Interface(), indent+"  "))
 			result = reflect.Append(result, v)
 		}
@@ -147,7 +170,6 @@ func toMap(hint string, v interface{}, indent string) interface{} {
 		rv := reflect.ValueOf(v)
 		for i := 0; i < rv.NumField(); i++ {
 			field := rv.Field(i)
-			// fmt.Println(indent + reflect.TypeOf(v).Field(i).Name)
 			if rv.Type().Field(i).Anonymous {
 				anonMember := toMap(hint+"."+rv.Type().Field(i).Name, field.Interface(), indent+"  ")
 				if reflect.TypeOf(anonMember).Kind() != reflect.Map {
@@ -182,7 +204,15 @@ func toMap(hint string, v interface{}, indent string) interface{} {
 						finalPropertyName = unref(reflect.TypeOf(field.Interface())).Name()
 					}
 					v := toMap(hint+"."+typeField.Name, field.Interface(), indent+"  ")
-					setm(result, unCamel(finalPropertyName), v, isOptional)
+					if deriv, ok := v.(sliceDerivator); ok {
+						if deriv.Values != nil {
+							for k, derivV := range deriv.Values {
+								setm(result, k, derivV, isOptional)
+							}
+						}
+					} else {
+						setm(result, unCamel(finalPropertyName), v, isOptional)
+					}
 				}
 			}
 		}

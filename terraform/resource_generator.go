@@ -173,7 +173,7 @@ func structFor(hint string, v interface{}, t reflect.Type) *AnnotatedSchema {
 					default:
 					}
 				}
-				schemata[k] = &schema.Schema{Type: schema.TypeList, Elem: v}
+				schemata[k] = &schema.Schema{Type: schema.TypeList, Elem: v.Elem}
 			}
 			return &AnnotatedSchema{Schemata: schemata}
 		}
@@ -208,14 +208,15 @@ func structFor(hint string, v interface{}, t reflect.Type) *AnnotatedSchema {
 		for _, implementor := range implementors {
 			resource := &schema.Resource{Schema: map[string]*schema.Schema{}}
 			implementorStruct := structFor(fmt.Sprintf("%v[%v]", hint, implementor), nil, implementor)
+
 			for k, v := range implementorStruct.Schema.Elem.(*schema.Resource).Schema {
 				resource.Schema[k] = v
 				v.Required = false
 				v.Optional = true
 				schemata[unCamel(implementor.Elem().Name())] = &schema.Schema{
-					Type:     schema.TypeList,
-					MaxItems: 1,
-					Elem:     resource,
+					Type: schema.TypeList,
+					// MaxItems: 1,
+					Elem: resource,
 				}
 			}
 			baseStruct := structFor(fmt.Sprintf("%v[%v]", hint, baseType), nil, baseType)
@@ -224,9 +225,9 @@ func structFor(hint string, v interface{}, t reflect.Type) *AnnotatedSchema {
 				v.Required = false
 				v.Optional = true
 				schemata[unCamel(baseType.Elem().Name())] = &schema.Schema{
-					Type:     schema.TypeList,
-					MaxItems: 1,
-					Elem:     resource,
+					Type: schema.TypeList,
+					// MaxItems: 1,
+					Elem: resource,
 				}
 			}
 		}

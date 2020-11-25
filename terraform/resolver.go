@@ -31,6 +31,18 @@ func (a address) replace(v string) address {
 	return address(fmt.Sprintf("%v.%v", s[:idx], v))
 }
 
+func (a address) backtrack() (address, string) {
+	if len(a) == 0 {
+		return a, ""
+	}
+	s := string(a)
+	idx := strings.LastIndex(s, ".")
+	if idx == -1 {
+		return a, ""
+	}
+	return address(s[:idx]), s[idx+1:]
+}
+
 func (a address) index(v int) address {
 	if len(a) == 0 {
 		// panic("indexing root key not allowed")
@@ -130,7 +142,6 @@ func (res *resolver) Resolve(t reflect.Type) (interface{}, error) {
 }
 
 func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interface{}, error) {
-	log.Printf("resolve %s (type: %v)\n", hint, t)
 	if t == nil {
 		return nil, errors.New("cannot resolve objects of nil type")
 	}
@@ -204,16 +215,8 @@ func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interfa
 		}
 		return nil, nil
 	case reflect.Int64:
-		debug := "metadata.0.configuration_versions.0" == string(hint)
 		if result, ok := res.GetOk(hint); ok {
 			return int64(result.(int)), nil
-		}
-		if debug {
-			log.Println("res.GetOk", hint, "delivered not ok")
-			if result, ok := res.GetOk("metadata.0.configuration_versions"); ok {
-				log.Println("res.GetOk", "metadata.0.configuration_versions", "delivered", result)
-			}
-			log.Println("res.GetOk", "metadata.0.configuration_versions", "delivered not ok")
 		}
 		return nil, nil
 	case reflect.Float64:
@@ -228,7 +231,7 @@ func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interfa
 		return nil, nil
 	case reflect.Slice:
 		if isPrimitiveType(t.Elem()) {
-			if untypedResult, ok := res.GetOk(hint); ok {
+			if untypedResult, ok := res.GetOk(hint); ok || untypedResult != nil {
 				switch t.Elem().Kind() {
 				case reflect.String:
 					return toStringSlice(untypedResult, t), nil
@@ -262,17 +265,29 @@ func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interfa
 			}
 			return nil, nil
 		}
-		debug := "metadata.0.configuration_versions" == string(hint)
 		result := reflect.MakeSlice(t, 0, 0)
+		if t.Elem().Kind() == reflect.Interface {
+			baseType := base(t.Elem())
+			for _, implementorType := range implementors(baseType, t.Elem()) {
+				matchHint := hint.replace(unCamel(unref(implementorType).Name()))
+				var implementorResults interface{}
+				var err error
+				if implementorResults, err = res.resolve(matchHint, reflect.SliceOf(implementorType), false); err != nil {
+					return nil, err
+				}
+				vImplementorResults := reflect.ValueOf(implementorResults)
+				for i := 0; i < vImplementorResults.Len(); i++ {
+					result = reflect.Append(result, vImplementorResults.Index(i))
+				}
+			}
+		}
+
 		var err error
 		if cnt, ok := res.Count(hint); ok {
 			for i := 0; i < cnt; i++ {
 				var entry interface{}
 				if entry, err = res.resolve(hint.index(i), t.Elem(), true); err != nil {
 					return nil, err
-				}
-				if debug {
-					log.Printf("  %d: %v\n", i, entry)
 				}
 				if entry != nil {
 					result = reflect.Append(result, reflect.ValueOf(entry))
@@ -360,9 +375,9 @@ func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interfa
 			matches := res.matches(hint.index(0), implementorType)
 			if !matches {
 				mHint := hint.replace(unCamel(unref(implementorType).Name()))
-				// log.Println("matching against address", mHint.index(0), "for type", implementorType)
+				log.Println("matching against address", mHint.index(0), "for type", implementorType)
 				if matches = res.matches(mHint.index(0), implementorType); matches {
-					// log.Println("  ", "matched")
+					log.Println("  ", "matched")
 					matchHint = mHint
 				}
 			}
