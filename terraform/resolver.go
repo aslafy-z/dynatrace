@@ -375,9 +375,9 @@ func (res *resolver) resolve(hint address, t reflect.Type, sliced bool) (interfa
 			matches := res.matches(hint.index(0), implementorType)
 			if !matches {
 				mHint := hint.replace(unCamel(unref(implementorType).Name()))
-				log.Println("matching against address", mHint.index(0), "for type", implementorType)
+				// log.Println("matching against address", mHint.index(0), "for type", implementorType)
 				if matches = res.matches(mHint.index(0), implementorType); matches {
-					log.Println("  ", "matched")
+					// log.Println("  ", "matched")
 					matchHint = mHint
 				}
 			}
