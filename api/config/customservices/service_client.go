@@ -3,7 +3,6 @@ package customservices
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/dynatrace/rest"
@@ -32,7 +31,6 @@ func (cs *Service) Create(customService *CustomService, technology Technology) (
 	var bytes []byte
 
 	if bytes, err = cs.client.POST(fmt.Sprintf("/service/customServices/%s", technology), customService, 201); err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 	var stub api.EntityShortRepresentation
