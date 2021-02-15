@@ -70,7 +70,7 @@ func (cs *ServiceClient) Delete(id string) error {
 }
 
 // Get TODO: documentation
-func (cs *ServiceClient) Get(id string, includeProcessGroupRefs bool) (NotificationConfig, error) {
+func (cs *ServiceClient) Get(id string) (NotificationConfig, error) {
 	if len(id) == 0 {
 		return nil, errors.New("Empty ID provided for the Notification to fetch")
 	}
@@ -78,7 +78,7 @@ func (cs *ServiceClient) Get(id string, includeProcessGroupRefs bool) (Notificat
 	var err error
 	var bytes []byte
 
-	if bytes, err = cs.client.GET(fmt.Sprintf("/notifications/%s?includeProcessGroupRefs=%v", id, includeProcessGroupRefs), 200); err != nil {
+	if bytes, err = cs.client.GET(fmt.Sprintf("/notifications/%s", id), 200); err != nil {
 		return nil, err
 	}
 	var baseConfig BaseNotificationConfig
