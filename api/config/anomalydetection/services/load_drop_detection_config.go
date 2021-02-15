@@ -15,6 +15,6 @@ func (lddc *LoadDropDetectionConfig) UnmarshalJSON(data []byte) error {
 }
 
 // MarshalJSON provides custom JSON serialization
-func (lddc *LoadDropDetectionConfig) MarshalJSON() ([]byte, error) {
+func (lddc LoadDropDetectionConfig) MarshalJSON() ([]byte, error) {
 	return gojson.Marshal(lddc)
 }
