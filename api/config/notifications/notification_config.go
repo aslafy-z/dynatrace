@@ -8,6 +8,7 @@ type NotificationConfig interface {
 	Initialize(*BaseNotificationConfig) // Initialize duplicates the properties of the other AbstractConditionKey into this instance. It also serves as a unique method for structs implementing the interface this abstract class is derived from
 	Implementors() []NotificationConfig // Implementors provides automatic JSON unmarshalling with a list of struct implementing (directly or indirectly) ConditionKey
 	GetID() *string                     // The ID of the notification configuration.
+	GetName() string                    // The name of the notification configuration.
 }
 
 // BaseNotificationConfig Configuration of a notification. The actual set of fields depends on the `type` of the notification.
@@ -20,9 +21,14 @@ type BaseNotificationConfig struct {
 	ID              *string `json:"id,omitempty"`    // The ID of the notification configuration.
 }
 
-// GetID returns he ID of the notification configuration.
+// GetID returns the ID of the notification configuration.
 func (bnc *BaseNotificationConfig) GetID() *string {
 	return bnc.ID
+}
+
+// GetName returns the name of the notification configuration.
+func (bnc *BaseNotificationConfig) GetName() string {
+	return bnc.Name
 }
 
 // Initialize duplicates the properties of the other BaseNotificationConfig into this instance
