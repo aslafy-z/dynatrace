@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 
+	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/dynatrace/rest"
 	"github.com/dtcookie/dynatrace/rest/credentials"
 	"github.com/dtcookie/opt"
@@ -28,7 +29,7 @@ func NewService(baseURL string, token string) *ServiceClient {
 }
 
 // Create TODO: documentation
-func (cs *ServiceClient) Create(config *AutoTag) (*EntityShortRepresentation, error) {
+func (cs *ServiceClient) Create(config *AutoTag) (*api.EntityShortRepresentation, error) {
 	var err error
 	var bytes []byte
 
@@ -40,7 +41,7 @@ func (cs *ServiceClient) Create(config *AutoTag) (*EntityShortRepresentation, er
 		log.Fatal(err)
 		return nil, err
 	}
-	var stub EntityShortRepresentation
+	var stub api.EntityShortRepresentation
 	if err = json.Unmarshal(bytes, &stub); err != nil {
 		return nil, err
 	}
@@ -89,14 +90,14 @@ func (cs *ServiceClient) Get(id string) (*AutoTag, error) {
 }
 
 // ListAll TODO: documentation
-func (cs *ServiceClient) ListAll() (*StubList, error) {
+func (cs *ServiceClient) ListAll() (*api.StubList, error) {
 	var err error
 	var bytes []byte
 
 	if bytes, err = cs.client.GET("/autoTags", 200); err != nil {
 		return nil, err
 	}
-	var stubList StubList
+	var stubList api.StubList
 	if err = json.Unmarshal(bytes, &stubList); err != nil {
 		return nil, err
 	}
