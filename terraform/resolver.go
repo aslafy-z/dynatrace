@@ -5,7 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"os"
 	"reflect"
 	"strings"
 )
@@ -133,11 +132,6 @@ func (res *resolver) HasCount(key address) bool {
 
 // Resolve has no documentation
 func (res *resolver) Resolve(t reflect.Type) (interface{}, error) {
-	if file, e := os.OpenFile("terraform-provider-dynatrace.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); e == nil {
-		log.SetOutput(file)
-	} else {
-		return nil, errors.New("Failed to open log file")
-	}
 	return res.resolve("", t, false)
 }
 

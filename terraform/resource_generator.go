@@ -3,8 +3,6 @@ package terraform
 import (
 	"fmt"
 	"io"
-	"log"
-	"os"
 	"reflect"
 	"strings"
 
@@ -13,11 +11,6 @@ import (
 
 // ResourceFor has no documentation
 func ResourceFor(v interface{}) *schema.Resource {
-	if file, e := os.OpenFile("terraform-provider-dynatrace.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666); e == nil {
-		log.SetOutput(file)
-	} else {
-		panic("Failed to open log file")
-	}
 	if v == nil {
 		panic("cannot generate a resource for `nil`")
 	}
@@ -29,6 +22,35 @@ func ResourceFor(v interface{}) *schema.Resource {
 func propName(field reflect.StructField) string {
 	if !startsWithUpper(field.Name) {
 		return ""
+	}
+	propertyName := unCamel(field.Name)
+	if jsonValue, ok := field.Tag.Lookup("json"); ok {
+		if len(jsonValue) > 0 {
+			if strings.Contains(jsonValue, ",") {
+				parts := strings.Split(jsonValue, ",")
+				part0 := strings.TrimSpace(parts[0])
+				if len(part0) > 0 {
+					propertyName = unCamel(part0)
+				}
+			} else {
+				propertyName = unCamel(jsonValue)
+			}
+		}
+	}
+	if propertyName == "-" {
+		return ""
+	}
+	return propertyName
+}
+
+func revisedPropName(field reflect.StructField, value reflect.Value) string {
+	if !startsWithUpper(field.Name) {
+		return ""
+	}
+	kind := field.Type.Kind()
+	if kind == reflect.Interface {
+		return unCamel(unref(reflect.TypeOf(value.Interface())).Name())
+		// log.Println(fmt.Sprintf("[%s] kind: %v, type: %v, typeName: %v", field.Name, kind, typ.String(), typ.Name()))
 	}
 	propertyName := unCamel(field.Name)
 	if jsonValue, ok := field.Tag.Lookup("json"); ok {

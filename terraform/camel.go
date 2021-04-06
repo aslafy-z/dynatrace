@@ -5,6 +5,10 @@ import (
 	"unicode"
 )
 
+func uncamel(address Address) string {
+	return unCamel(string(address))
+}
+
 func unCamel(s string) string {
 	s = strings.ReplaceAll(s, "ID", "Id")
 	result := ""

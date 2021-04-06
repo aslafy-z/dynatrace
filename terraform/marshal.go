@@ -13,23 +13,96 @@ type ResourceSlice []interface{}
 
 // Marshal has no documentation
 func Marshal(v interface{}, resource string, name string) ([]byte, error) {
-	mapped := toMap("", v, "")
-	m := OrderedMap{}
-	switch typed := mapped.(type) {
-	case *interface{}:
-		m = (*typed).(OrderedMap)
-	case OrderedMap:
-		m = typed
+	lrs := &logResData{map[string]interface{}{}}
+	if err := ToTerraform(v, lrs); err != nil {
+		return nil, err
 	}
-	m.Delete("id")
 	var buf bytes.Buffer
 	fmt.Fprintln(&buf, fmt.Sprintf(`resource %s %s {`, jenc(terraformat(resource)), jenc(terraformat(name))))
-	for _, key := range m.OrderedKeys() {
-		tfPrint(&buf, key.Value, m[key], indentStr)
+	for k, v := range lrs.values {
+		tPrint(&buf, k, v, indentStr)
 	}
 	fmt.Fprintln(&buf, "}")
 
 	return buf.Bytes(), nil
+}
+
+func tPrint(buf *bytes.Buffer, key string, v interface{}, indent string) {
+	if v == nil {
+		panic(fmt.Errorf("%v is nil", key))
+	}
+	switch reflect.TypeOf(v).Kind() {
+	case reflect.Ptr:
+		tPrint(buf, key, *(v.(*interface{})), indent)
+	case reflect.Slice:
+		rv := reflect.ValueOf(v)
+		if rv.Len() == 0 {
+			// fmt.Printf("Slice Type: %v\n", rv.Type())
+			if rv.Type() != reflect.TypeOf(ResourceSlice{}) {
+				if len(key) > 0 {
+					fmt.Fprintln(buf, fmt.Sprintf(`%s%s = []`, indent, key))
+				} else {
+					fmt.Fprintln(buf, fmt.Sprintf(`%s[]`, indent))
+				}
+			}
+		} else {
+			if isPrimitive(rv.Index(0).Interface()) {
+				if len(key) > 0 {
+					fmt.Fprint(buf, fmt.Sprintf(`%s%s = [`, indent, key))
+				} else {
+					fmt.Fprint(buf, fmt.Sprintf(`%s[`, indent))
+				}
+				sep := " "
+				for i := 0; i < rv.Len(); i++ {
+					value := rv.Index(i)
+					if reflect.TypeOf(value.Interface()).Kind() == reflect.String {
+						fmt.Fprint(buf, fmt.Sprintf(`%s"%v"`, sep, value.Interface()))
+					} else {
+						fmt.Fprint(buf, fmt.Sprintf(`%s%v`, sep, value.Interface()))
+					}
+					sep = ", "
+				}
+				fmt.Fprintln(buf, ` ]`)
+			} else {
+				for i := 0; i < rv.Len(); i++ {
+					tPrint(buf, key, rv.Index(i).Interface(), indent)
+				}
+			}
+		}
+	case reflect.Map:
+		rv := v.(map[string]interface{})
+		if len(key) > 0 {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s%s {`, indent, key))
+		} else {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s{`, indent))
+		}
+
+		for mk, mv := range rv {
+			tPrint(buf, mk, mv, indent+indentStr)
+		}
+		fmt.Fprintln(buf, fmt.Sprintf(`%s}`, indent))
+	case reflect.String:
+		if len(key) > 0 {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s%s = %v`, indent, key, jenc(v)))
+		} else {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s%s%v`, indent, key, jenc(v)))
+		}
+	default:
+		if len(key) > 0 {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s%s = %v`, indent, key, v))
+		} else {
+			fmt.Fprintln(buf, fmt.Sprintf(`%s%v`, indent, v))
+		}
+	}
+}
+
+type logResData struct {
+	values map[string]interface{}
+}
+
+func (lrs *logResData) Set(key string, v interface{}) error {
+	lrs.values[key] = v
+	return nil
 }
 
 // MarshalJSON has no documentation
