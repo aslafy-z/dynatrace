@@ -82,6 +82,7 @@ func (cs *ServiceClient) Get(id string) (*AWSCredentialsConfig, error) {
 	if bytes, err = cs.client.GET(fmt.Sprintf("/aws/credentials/%s", id), 200); err != nil {
 		return nil, err
 	}
+
 	var autoTag AWSCredentialsConfig
 	if err = json.Unmarshal(bytes, &autoTag); err != nil {
 		return nil, err
@@ -98,8 +99,9 @@ func (cs *ServiceClient) ListAll() (*api.StubList, error) {
 		return nil, err
 	}
 	var stubList api.StubList
-	if err = json.Unmarshal(bytes, &stubList); err != nil {
+	if err = json.Unmarshal(bytes, &stubList.Values); err != nil {
 		return nil, err
 	}
+
 	return &stubList, nil
 }
