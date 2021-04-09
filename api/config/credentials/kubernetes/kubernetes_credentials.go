@@ -2,7 +2,6 @@ package kubernetes
 
 import (
 	"encoding/json"
-	"log"
 
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/hcl"
@@ -139,7 +138,6 @@ func (kc *KubernetesCredentials) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (kc *KubernetesCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
-	log.Println("KubernetesCredentials", "UnmarshalHCL")
 	if value, ok := decoder.GetOk("unknowns"); ok {
 		if err := json.Unmarshal([]byte(value.(string)), kc); err != nil {
 			return err
@@ -180,8 +178,6 @@ func (kc *KubernetesCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if _, value := decoder.GetChange("certificate_check_enabled"); value != nil {
 		kc.CertificateCheckEnabled = opt.NewBool(value.(bool))
-	} else {
-		log.Println("certificate_check_enabled", "DID NOT FIND!!!!")
 	}
 	if value, ok := decoder.GetOk("endpoint_url"); ok {
 		kc.EndpointURL = value.(string)
@@ -269,7 +265,6 @@ func (kc *KubernetesCredentials) UnmarshalJSON(data []byte) error {
 }
 
 func (kc *KubernetesCredentials) MarshalJSON() ([]byte, error) {
-	log.Println("KubernetesCredentials", "MarshalJSON")
 	m := map[string]json.RawMessage{}
 	if kc.Unknowns != nil {
 		for k, v := range kc.Unknowns {
@@ -337,7 +332,6 @@ func (kc *KubernetesCredentials) MarshalJSON() ([]byte, error) {
 		}
 		m["authToken"] = rawMessage
 	}
-	log.Println("CertificateCheckEnabled", kc.CertificateCheckEnabled)
 	if kc.CertificateCheckEnabled != nil {
 		rawMessage, err := json.Marshal(kc.CertificateCheckEnabled)
 		if err != nil {
