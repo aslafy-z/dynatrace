@@ -13,7 +13,7 @@ package kubernetes
 type EndpointStatus string
 
 // EndpointStatuss offers the known enum values
-var EndpointStatuss = struct {
+var EndpointStates = struct {
 	Assigned                 EndpointStatus
 	Disabled                 EndpointStatus
 	FastcheckAuthError       EndpointStatus
