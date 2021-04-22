@@ -176,7 +176,7 @@ func toTerraform(v interface{}, rd NGResourceCollector, address Address) error {
 	kind := typ.Kind()
 	switch kind {
 	case reflect.Ptr:
-		if !rv.IsZero() {
+		if !rv.IsZero() && !rv.IsNil() {
 			return toTerraform(rv.Elem().Interface(), rd, address)
 		}
 		return nil
