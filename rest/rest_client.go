@@ -9,6 +9,7 @@ import (
 	"log"
 	"net/http"
 	"net/http/cookiejar"
+	"reflect"
 	"strings"
 
 	"github.com/dtcookie/dynatrace/rest/credentials"
@@ -208,5 +209,44 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 	if Verbose && (body != nil) && len(body) > 0 {
 		log.Println("  Response Body: " + string(body))
 	}
+
+	if (body != nil) && len(body) > 0 {
+		m := map[string]interface{}{}
+		if err = json.Unmarshal(body, &m); err == nil {
+			clean(m)
+			var cleanBody []byte
+			if cleanBody, err = json.Marshal(m); err == nil {
+				if Verbose && (cleanBody != nil) && len(cleanBody) > 0 {
+					log.Println("  Clean Response Body: " + string(cleanBody))
+				}
+				return cleanBody, nil
+			}
+		}
+	}
+
 	return body, nil
+}
+
+func clean(v interface{}) {
+	if v == nil {
+		return
+	}
+	switch rv := v.(type) {
+	case map[string]interface{}:
+		for k, v := range rv {
+			if v == nil {
+				delete(rv, k)
+			} else {
+				clean(v)
+			}
+		}
+	case []interface{}:
+		for _, e := range rv {
+			clean(e)
+		}
+	case string, float64, bool:
+		return
+	default:
+		panic(reflect.TypeOf(v))
+	}
 }
