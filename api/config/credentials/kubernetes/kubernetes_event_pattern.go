@@ -3,7 +3,6 @@ package kubernetes
 import (
 	"encoding/json"
 
-	"github.com/dtcookie/gojson"
 	"github.com/dtcookie/hcl"
 )
 
@@ -43,7 +42,7 @@ func (kep *KubernetesEventPattern) Schema() map[string]*hcl.Schema {
 func (kep *KubernetesEventPattern) MarshalHCL() (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	if kep.Unknowns != nil {
+	if len(kep.Unknowns) > 0 {
 		data, err := json.Marshal(kep.Unknowns)
 		if err != nil {
 			return nil, err
@@ -67,8 +66,11 @@ func (kep *KubernetesEventPattern) UnmarshalHCL(decoder hcl.Decoder) error {
 			return err
 		}
 		delete(kep.Unknowns, "active")
-		delete(kep.Unknowns, "fieldSelector")
+		delete(kep.Unknowns, "field_selector")
 		delete(kep.Unknowns, "label")
+		if len(kep.Unknowns) == 0 {
+			kep.Unknowns = nil
+		}
 	}
 	if value, ok := decoder.GetOk("active"); ok {
 		kep.Active = value.(bool)
@@ -82,12 +84,62 @@ func (kep *KubernetesEventPattern) UnmarshalHCL(decoder hcl.Decoder) error {
 	return nil
 }
 
-// UnmarshalJSON provides custom JSON deserialization
 func (kep *KubernetesEventPattern) UnmarshalJSON(data []byte) error {
-	return gojson.Unmarshal(data, kep)
+	m := map[string]json.RawMessage{}
+	if err := json.Unmarshal(data, &m); err != nil {
+		return err
+	}
+	if v, found := m["label"]; found {
+		if err := json.Unmarshal(v, &kep.Label); err != nil {
+			return err
+		}
+	}
+	if v, found := m["active"]; found {
+		if err := json.Unmarshal(v, &kep.Active); err != nil {
+			return err
+		}
+	}
+	if v, found := m["fieldSelector"]; found {
+		if err := json.Unmarshal(v, &kep.FieldSelector); err != nil {
+			return err
+		}
+	}
+	delete(m, "active")
+	delete(m, "label")
+	delete(m, "fieldSelector")
+	if len(m) > 0 {
+		kep.Unknowns = m
+	}
+	return nil
 }
 
-// MarshalJSON provides custom JSON serialization
 func (kep *KubernetesEventPattern) MarshalJSON() ([]byte, error) {
-	return gojson.Marshal(kep)
+	m := map[string]json.RawMessage{}
+	if len(kep.Unknowns) > 0 {
+		for k, v := range kep.Unknowns {
+			m[k] = v
+		}
+	}
+	{
+		rawMessage, err := json.Marshal(kep.Label)
+		if err != nil {
+			return nil, err
+		}
+		m["label"] = rawMessage
+	}
+	{
+		rawMessage, err := json.Marshal(kep.Active)
+		if err != nil {
+			return nil, err
+		}
+		m["active"] = rawMessage
+	}
+	{
+		rawMessage, err := json.Marshal(kep.FieldSelector)
+		if err != nil {
+			return nil, err
+		}
+		m["fieldSelector"] = rawMessage
+	}
+	return json.Marshal(m)
 }
