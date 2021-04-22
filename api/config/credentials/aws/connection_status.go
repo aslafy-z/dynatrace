@@ -6,8 +6,8 @@ package aws
 // * `UNINITIALIZED`: The successful connection has never been established for these credentials.
 type ConnectionStatus string
 
-// ConnectionStatuss offers the known enum values
-var ConnectionStatuss = struct {
+// ConnectionStati offers the known enum values
+var ConnectionStati = struct {
 	Connected     ConnectionStatus
 	Disconnected  ConnectionStatus
 	Uninitialized ConnectionStatus
