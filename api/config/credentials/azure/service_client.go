@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"log"
 
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/dynatrace/rest"
@@ -38,7 +37,6 @@ func (cs *ServiceClient) Create(config *AzureCredentials) (*api.EntityShortRepre
 	}
 
 	if bytes, err = cs.client.POST("/azure/credentials", config, 201); err != nil {
-		log.Fatal(err)
 		return nil, err
 	}
 	var stub api.EntityShortRepresentation
