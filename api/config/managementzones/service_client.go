@@ -33,7 +33,7 @@ func (cs *ServiceClient) Create(managementzone *ManagementZone) (*api.EntityShor
 	var bytes []byte
 
 	if len(opt.String(managementzone.ID)) > 0 {
-		return nil, errors.New("You MUST NOT provide an ID within the ManagementZone payload upon creation")
+		return nil, errors.New("you MUST NOT provide an ID within the ManagementZone payload upon creation")
 	}
 
 	if bytes, err = cs.client.POST("/managementZones", managementzone, 201); err != nil {
@@ -49,7 +49,7 @@ func (cs *ServiceClient) Create(managementzone *ManagementZone) (*api.EntityShor
 // Update TODO: documentation
 func (cs *ServiceClient) Update(managementzone *ManagementZone) error {
 	if len(opt.String(managementzone.ID)) == 0 {
-		return errors.New("The Dashboard doesn't contain an ID")
+		return errors.New("the configuration doesn't contain an ID")
 	}
 	if _, err := cs.client.PUT(fmt.Sprintf("/managementZones/%s", opt.String(managementzone.ID)), managementzone, 204); err != nil {
 		return err
@@ -60,7 +60,7 @@ func (cs *ServiceClient) Update(managementzone *ManagementZone) error {
 // Delete TODO: documentation
 func (cs *ServiceClient) Delete(id string) error {
 	if len(id) == 0 {
-		return errors.New("Empty ID provided for the Dashboard to delete")
+		return errors.New("empty ID provided for the configuration to delete")
 	}
 	if _, err := cs.client.DELETE(fmt.Sprintf("/managementZones/%s", id), 204); err != nil {
 		return err
@@ -71,7 +71,7 @@ func (cs *ServiceClient) Delete(id string) error {
 // Get TODO: documentation
 func (cs *ServiceClient) Get(id string, includeProcessGroupRefs bool) (*ManagementZone, error) {
 	if len(id) == 0 {
-		return nil, errors.New("Empty ID provided for the Dashboard to fetch")
+		return nil, errors.New("empty ID provided for the configuration to fetch")
 	}
 
 	var err error
@@ -88,16 +88,16 @@ func (cs *ServiceClient) Get(id string, includeProcessGroupRefs bool) (*Manageme
 }
 
 // ListAll TODO: documentation
-func (cs *ServiceClient) ListAll() (*StubList, error) {
+func (cs *ServiceClient) ListAll() ([]*api.EntityShortRepresentation, error) {
 	var err error
 	var bytes []byte
 
 	if bytes, err = cs.client.GET("/managementZones", 200); err != nil {
 		return nil, err
 	}
-	var stubList StubList
+	var stubList api.StubList
 	if err = json.Unmarshal(bytes, &stubList); err != nil {
 		return nil, err
 	}
-	return &stubList, nil
+	return stubList.Values, nil
 }
