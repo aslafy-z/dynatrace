@@ -34,7 +34,7 @@ func (cs *ServiceClient) Create(config *AutoTag) (*api.EntityShortRepresentation
 	var bytes []byte
 
 	if len(opt.String(config.ID)) > 0 {
-		return nil, errors.New("You MUST NOT provide an ID within the Notification payload upon creation")
+		return nil, errors.New("you MUST NOT provide an ID within the Notification payload upon creation")
 	}
 
 	if bytes, err = cs.client.POST("/autoTags", config, 201); err != nil {
@@ -51,7 +51,7 @@ func (cs *ServiceClient) Create(config *AutoTag) (*api.EntityShortRepresentation
 // Update TODO: documentation
 func (cs *ServiceClient) Update(config *AutoTag) error {
 	if len(opt.String(config.ID)) == 0 {
-		return errors.New("The Notification doesn't contain an ID")
+		return errors.New("the configuration doesn't contain an ID")
 	}
 	if _, err := cs.client.PUT(fmt.Sprintf("/autoTags/%s", opt.String(config.ID)), config, 204); err != nil {
 		return err
@@ -62,7 +62,7 @@ func (cs *ServiceClient) Update(config *AutoTag) error {
 // Delete TODO: documentation
 func (cs *ServiceClient) Delete(id string) error {
 	if len(id) == 0 {
-		return errors.New("Empty ID provided for the Notification to delete")
+		return errors.New("empty ID provided for the configuration to delete")
 	}
 	if _, err := cs.client.DELETE(fmt.Sprintf("/autoTags/%s", id), 204); err != nil {
 		return err
@@ -73,7 +73,7 @@ func (cs *ServiceClient) Delete(id string) error {
 // Get TODO: documentation
 func (cs *ServiceClient) Get(id string) (*AutoTag, error) {
 	if len(id) == 0 {
-		return nil, errors.New("Empty ID provided for the Notification to fetch")
+		return nil, errors.New("empty ID provided for the Notification to fetch")
 	}
 
 	var err error
