@@ -3,17 +3,18 @@ package managementzones
 import (
 	"encoding/json"
 
+	"github.com/dtcookie/dynatrace/api/config/entityruleengine"
 	"github.com/dtcookie/hcl"
 )
 
 // Rule The rule of the management zone usage. It defines how the management zone applies.
 // Each rule is evaluated independently of all other rules.
 type Rule struct {
-	Conditions       []*EntityRuleEngineCondition `json:"conditions"`                 // A list of matching rules for the management zone.  The management zone applies only if **all** conditions are fulfilled.
-	Enabled          bool                         `json:"enabled"`                    // The rule is enabled (`true`) or disabled (`false`).
-	PropagationTypes []PropagationType            `json:"propagationTypes,omitempty"` // How to apply the management zone to underlying entities:  * `SERVICE_TO_HOST_LIKE`: Apply to underlying hosts of matching services\n   - `SERVICE_TO_PROCESS_GROUP_LIKE`: Apply to underlying process groups of matching services\n   - `PROCESS_GROUP_TO_HOST`: Apply to underlying hosts of matching process groups\n   - `PROCESS_GROUP_TO_SERVICE`: Apply to all services provided by matching process groups\n   - `HOST_TO_PROCESS_GROUP_INSTANCE`: Apply to processes running on matching hosts\n   - `CUSTOM_DEVICE_GROUP_TO_CUSTOM_DEVICE`: Apply to custom devices in matching custom device groups\n   - `AZURE_TO_PG`: Apply to process groups connected to matching Azure entities\n   - `AZURE_TO_SERVICE`: Apply to services provided by matching Azure entities.
-	Type             RuleType                     `json:"type"`                       // The type of Dynatrace entities the management zone can be applied to.
-	Unknowns         map[string]json.RawMessage   `json:"-"`
+	Conditions       []*entityruleengine.Condition `json:"conditions"`                 // A list of matching rules for the management zone.  The management zone applies only if **all** conditions are fulfilled.
+	Enabled          bool                          `json:"enabled"`                    // The rule is enabled (`true`) or disabled (`false`).
+	PropagationTypes []PropagationType             `json:"propagationTypes,omitempty"` // How to apply the management zone to underlying entities:  * `SERVICE_TO_HOST_LIKE`: Apply to underlying hosts of matching services\n   - `SERVICE_TO_PROCESS_GROUP_LIKE`: Apply to underlying process groups of matching services\n   - `PROCESS_GROUP_TO_HOST`: Apply to underlying hosts of matching process groups\n   - `PROCESS_GROUP_TO_SERVICE`: Apply to all services provided by matching process groups\n   - `HOST_TO_PROCESS_GROUP_INSTANCE`: Apply to processes running on matching hosts\n   - `CUSTOM_DEVICE_GROUP_TO_CUSTOM_DEVICE`: Apply to custom devices in matching custom device groups\n   - `AZURE_TO_PG`: Apply to process groups connected to matching Azure entities\n   - `AZURE_TO_SERVICE`: Apply to services provided by matching Azure entities.
+	Type             RuleType                      `json:"type"`                       // The type of Dynatrace entities the management zone can be applied to.
+	Unknowns         map[string]json.RawMessage    `json:"-"`
 }
 
 func (mzr *Rule) Schema() map[string]*hcl.Schema {
@@ -40,7 +41,7 @@ func (mzr *Rule) Schema() map[string]*hcl.Schema {
 			MinItems:    1,
 			Optional:    true,
 			Elem: &hcl.Resource{
-				Schema: new(EntityRuleEngineCondition).Schema(),
+				Schema: new(entityruleengine.Condition).Schema(),
 			},
 		},
 		"unknowns": {
@@ -115,9 +116,9 @@ func (mzr *Rule) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 	}
 	if result, ok := decoder.GetOk("conditions.#"); ok {
-		mzr.Conditions = []*EntityRuleEngineCondition{}
+		mzr.Conditions = []*entityruleengine.Condition{}
 		for idx := 0; idx < result.(int); idx++ {
-			entry := new(EntityRuleEngineCondition)
+			entry := new(entityruleengine.Condition)
 			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "conditions", idx)); err != nil {
 				return err
 			}

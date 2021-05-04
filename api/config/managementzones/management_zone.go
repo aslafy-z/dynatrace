@@ -3,6 +3,7 @@ package managementzones
 import (
 	"encoding/json"
 
+	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/opt"
 )
@@ -11,7 +12,7 @@ import (
 type ManagementZone struct {
 	ID                       *string                    `json:"id,omitempty"`                       // The ID of the management zone
 	Description              *string                    `json:"description,omitempty"`              // The description of the management zone
-	Metadata                 *ConfigurationMetadata     `json:"metadata,omitempty"`                 // Metadata useful for debugging
+	Metadata                 *api.ConfigMetadata        `json:"metadata,omitempty"`                 // Metadata useful for debugging
 	Name                     string                     `json:"name"`                               // The name of the management zone.
 	Rules                    []*Rule                    `json:"rules,omitempty"`                    // A list of rules for management zone usage. Each rule is evaluated independently of all other rules.
 	DimensionalRules         []*DimensionalRule         `json:"dimensionalRules,omitempty"`         // A list of dimensional data rules for management zone usage. If several rules are specified, the **OR** logic applies
@@ -38,7 +39,7 @@ func (mz *ManagementZone) Schema() map[string]*hcl.Schema {
 			Deprecated:  "`metadata` exists for backwards compatibility but shouldn't get specified anymore",
 			Optional:    true,
 			Elem: &hcl.Resource{
-				Schema: new(ConfigurationMetadata).Schema(),
+				Schema: new(api.ConfigMetadata).Schema(),
 			},
 		},
 		"rules": {
