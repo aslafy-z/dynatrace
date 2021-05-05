@@ -63,11 +63,11 @@ func (mzr *Rule) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["enabled"] = mzr.Enabled
-	result["type"] = mzr.Type
+	result["type"] = string(mzr.Type)
 	if len(mzr.PropagationTypes) > 0 {
 		entries := []interface{}{}
 		for _, entry := range mzr.PropagationTypes {
-			entries = append(entries, entry)
+			entries = append(entries, string(entry))
 		}
 		result["propagation_types"] = entries
 	}
