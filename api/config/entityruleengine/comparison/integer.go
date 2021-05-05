@@ -61,7 +61,7 @@ func (ic *Integer) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = ic.Negate
-	result["operator"] = ic.Operator
+	result["operator"] = string(ic.Operator)
 	if ic.Value != nil {
 		result["value"] = int(opt.Int32(ic.Value))
 	}

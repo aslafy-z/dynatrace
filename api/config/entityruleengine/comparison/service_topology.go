@@ -60,7 +60,7 @@ func (stc *ServiceTopology) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = stc.Negate
-	result["operator"] = stc.Operator
+	result["operator"] = string(stc.Operator)
 	if stc.Value != nil {
 		result["value"] = stc.Value.String()
 	}

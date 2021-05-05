@@ -60,7 +60,7 @@ func (otc *OSType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = otc.Negate
-	result["operator"] = otc.Operator
+	result["operator"] = string(otc.Operator)
 	if otc.Value != nil {
 		result["value"] = otc.Value.String()
 	}

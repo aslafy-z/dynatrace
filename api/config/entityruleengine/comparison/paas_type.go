@@ -60,7 +60,7 @@ func (ptc *PaasType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = ptc.Negate
-	result["operator"] = ptc.Operator
+	result["operator"] = string(ptc.Operator)
 	if ptc.Value != nil {
 		result["value"] = ptc.Value.String()
 	}

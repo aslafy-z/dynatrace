@@ -60,7 +60,7 @@ func (atc *ApplicationType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = atc.Negate
-	result["operator"] = atc.Operator
+	result["operator"] = string(atc.Operator)
 	if atc.Value != nil {
 		result["value"] = atc.Value.String()
 	}

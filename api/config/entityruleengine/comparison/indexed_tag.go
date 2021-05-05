@@ -65,7 +65,7 @@ func (itc *IndexedTag) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = itc.Negate
-	result["operator"] = itc.Operator
+	result["operator"] = string(itc.Operator)
 	if itc.Value != nil {
 		if marshalled, err := itc.Value.MarshalHCL(); err == nil {
 			result["value"] = []interface{}{marshalled}

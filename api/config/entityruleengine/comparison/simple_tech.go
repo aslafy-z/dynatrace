@@ -64,7 +64,7 @@ func (stc *SimpleTech) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = stc.Negate
-	result["operator"] = stc.Operator
+	result["operator"] = string(stc.Operator)
 	if stc.Value != nil {
 		if marshalled, err := stc.Value.MarshalHCL(); err == nil {
 			result["value"] = []interface{}{marshalled}

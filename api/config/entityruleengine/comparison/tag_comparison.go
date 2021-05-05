@@ -64,7 +64,7 @@ func (tc *Tag) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = tc.Negate
-	result["operator"] = tc.Operator
+	result["operator"] = string(tc.Operator)
 	if tc.Value != nil {
 		if marshalled, err := tc.Value.MarshalHCL(); err == nil {
 			result["value"] = []interface{}{marshalled}

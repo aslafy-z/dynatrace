@@ -60,7 +60,7 @@ func (htc *HypervisorType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = htc.Negate
-	result["operator"] = htc.Operator
+	result["operator"] = string(htc.Operator)
 	if htc.Value != nil {
 		result["value"] = htc.Value.String()
 	}

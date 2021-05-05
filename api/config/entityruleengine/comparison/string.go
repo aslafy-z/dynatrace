@@ -67,7 +67,7 @@ func (sc *String) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = sc.Negate
-	result["operator"] = sc.Operator
+	result["operator"] = string(sc.Operator)
 	result["case_sensitive"] = sc.CaseSensitive
 	if sc.Value != nil {
 		result["value"] = *sc.Value

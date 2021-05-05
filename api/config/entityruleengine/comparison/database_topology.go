@@ -60,7 +60,7 @@ func (dtc *DatabaseTopology) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = dtc.Negate
-	result["operator"] = dtc.Operator
+	result["operator"] = string(dtc.Operator)
 	if dtc.Value != nil {
 		result["value"] = dtc.Value.String()
 	}

@@ -60,7 +60,7 @@ func (ddc *DCRumDecoder) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = ddc.Negate
-	result["operator"] = ddc.Operator
+	result["operator"] = string(ddc.Operator)
 	if ddc.Value != nil {
 		result["value"] = ddc.Value.String()
 	}

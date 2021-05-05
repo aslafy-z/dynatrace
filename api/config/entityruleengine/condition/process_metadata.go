@@ -53,7 +53,9 @@ func (pmck *ProcessMetadata) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["attribute"] = string(pmck.Attribute)
-	result["dynamic_key"] = string(*pmck.DynamicKey)
+	if pmck.DynamicKey != nil {
+		result["dynamic_key"] = string(*pmck.DynamicKey)
+	}
 	return result, nil
 }
 

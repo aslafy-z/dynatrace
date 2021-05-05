@@ -60,7 +60,7 @@ func (setc *SyntheticEngineType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = setc.Negate
-	result["operator"] = setc.Operator
+	result["operator"] = string(setc.Operator)
 	if setc.Value != nil {
 		result["value"] = setc.Value.String()
 	}

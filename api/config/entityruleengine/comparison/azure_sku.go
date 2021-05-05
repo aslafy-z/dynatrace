@@ -60,7 +60,7 @@ func (asc *AzureSku) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = asc.Negate
-	result["operator"] = asc.Operator
+	result["operator"] = string(asc.Operator)
 	if asc.Value != nil {
 		result["value"] = asc.Value.String()
 	}

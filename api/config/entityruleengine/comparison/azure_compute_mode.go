@@ -60,7 +60,7 @@ func (acmc *AzureComputeMode) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = acmc.Negate
-	result["operator"] = acmc.Operator
+	result["operator"] = string(acmc.Operator)
 	if acmc.Value != nil {
 		result["value"] = acmc.Value.String()
 	}

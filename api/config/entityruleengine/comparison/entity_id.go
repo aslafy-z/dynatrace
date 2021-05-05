@@ -60,7 +60,7 @@ func (eic *EntityID) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = eic.Negate
-	result["operator"] = eic.Operator
+	result["operator"] = string(eic.Operator)
 	if eic.Value != nil {
 		result["value"] = *eic.Value
 	}

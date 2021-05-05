@@ -60,7 +60,7 @@ func (mpc *MobilePlatform) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = mpc.Negate
-	result["operator"] = mpc.Operator
+	result["operator"] = string(mpc.Operator)
 	if mpc.Value != nil {
 		result["value"] = mpc.Value.String()
 	}

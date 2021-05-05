@@ -60,7 +60,7 @@ func (bc *Bitness) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = bc.Negate
-	result["operator"] = bc.Operator
+	result["operator"] = string(bc.Operator)
 	if bc.Value != nil {
 		result["value"] = bc.Value.String()
 	}

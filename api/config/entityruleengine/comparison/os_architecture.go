@@ -61,7 +61,7 @@ func (oac *OSArchitecture) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = oac.Negate
-	result["operator"] = oac.Operator
+	result["operator"] = string(oac.Operator)
 	if oac.Value != nil {
 		result["value"] = oac.Value.String()
 	}

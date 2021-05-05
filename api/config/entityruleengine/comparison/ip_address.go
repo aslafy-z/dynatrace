@@ -67,7 +67,7 @@ func (iac *IPAddress) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = iac.Negate
-	result["operator"] = iac.Operator
+	result["operator"] = string(iac.Operator)
 	if iac.Value != nil {
 		result["value"] = *iac.Value
 	}

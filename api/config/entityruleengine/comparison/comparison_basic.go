@@ -65,7 +65,7 @@ func (bcb *BaseComparison) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = bcb.Negate
-	result["type"] = bcb.Type
+	result["type"] = string(bcb.Type)
 	return result, nil
 }
 

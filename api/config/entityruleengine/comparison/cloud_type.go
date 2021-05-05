@@ -60,7 +60,7 @@ func (ctc *CloudType) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = ctc.Negate
-	result["operator"] = ctc.Operator
+	result["operator"] = string(ctc.Operator)
 	if ctc.Value != nil {
 		result["value"] = ctc.Value.String()
 	}

@@ -61,7 +61,7 @@ func (isc *IndexedString) MarshalHCL() (map[string]interface{}, error) {
 		result["unknowns"] = string(data)
 	}
 	result["negate"] = isc.Negate
-	result["operator"] = isc.Operator
+	result["operator"] = string(isc.Operator)
 	if isc.Value != nil {
 		result["value"] = *isc.Value
 	}
