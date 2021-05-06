@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"sort"
+	"strings"
 
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/hcl"
@@ -69,22 +71,6 @@ func (me *Profile) Schema() map[string]*hcl.Schema {
 	}
 }
 
-// func hash(item interface{}) int {
-// 	log.Println(fmt.Sprintf("hash %T", item))
-// 	data, _ := json.Marshal(item)
-// 	s := string(data)
-// 	v := int(crc32.ChecksumIEEE([]byte(s)))
-// 	if v >= 0 {
-// 		return v
-// 	}
-// 	if -v >= 0 {
-// 		return -v
-// 	}
-// 	// v == MinInt
-// 	return 0
-
-// }
-
 func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
@@ -100,8 +86,15 @@ func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
 		result["mz_id"] = me.DisplayName
 	}
 	if me.Rules != nil {
+		rules := append([]*ProfileSeverityRule{}, me.Rules...)
+		sort.Slice(rules, func(i, j int) bool {
+			d1, _ := json.Marshal(rules[i])
+			d2, _ := json.Marshal(rules[j])
+			cmp := strings.Compare(string(d1), string(d2))
+			return (cmp == -1)
+		})
 		entries := []interface{}{}
-		for _, entry := range me.Rules {
+		for _, entry := range rules {
 			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
