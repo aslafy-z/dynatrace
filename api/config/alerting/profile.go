@@ -2,8 +2,6 @@ package alerting
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 	"sort"
 	"strings"
 
@@ -141,7 +139,6 @@ func (me *Profile) UnmarshalHCL(decoder hcl.Decoder) error {
 		me.MzID = opt.NewString(value.(string))
 	}
 	if result, ok := decoder.GetOk("rules.#"); ok {
-		log.Println(fmt.Sprintf("decoder.GetOk(\"rules.#\"): %v, %v", result, ok))
 		me.Rules = []*ProfileSeverityRule{}
 		for idx := 0; idx < result.(int); idx++ {
 			entry := new(ProfileSeverityRule)
@@ -150,8 +147,6 @@ func (me *Profile) UnmarshalHCL(decoder hcl.Decoder) error {
 			}
 			me.Rules = append(me.Rules, entry)
 		}
-	} else {
-		log.Println("GetOk(rules.#) didn't provide a value")
 	}
 	if result, ok := decoder.GetOk("event_type_filters.#"); ok {
 		me.EventTypeFilters = []*EventTypeFilter{}

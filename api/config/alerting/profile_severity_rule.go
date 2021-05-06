@@ -2,8 +2,6 @@ package alerting
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
 
 	"github.com/dtcookie/hcl"
 )
@@ -69,7 +67,6 @@ func (me *ProfileSeverityRule) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *ProfileSeverityRule) UnmarshalHCL(decoder hcl.Decoder) error {
-	log.Println("ProfileSeverityRule", "UnmarshalHCL")
 	if value, ok := decoder.GetOk("unknowns"); ok {
 		if err := json.Unmarshal([]byte(value.(string)), me); err != nil {
 			return err
@@ -85,11 +82,9 @@ func (me *ProfileSeverityRule) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 	}
 	if value, ok := decoder.GetOk("severity_level"); ok {
-		log.Println(fmt.Sprintf("decoder.GetOk(\"severity_level\"): %v, %v", value, ok))
 		me.SeverityLevel = SeverityLevel(value.(string))
 	}
 	if value, ok := decoder.GetOk("delay_in_minutes"); ok {
-		log.Println(fmt.Sprintf("decoder.GetOk(\"delay_in_minutes\"): %v, %v", value, ok))
 		me.DelayInMinutes = int32(value.(int))
 	}
 	if _, ok := decoder.GetOk("tag_filter.#"); ok {
