@@ -74,7 +74,7 @@ func (me *Rule) MarshalHCL() (map[string]interface{}, error) {
 	if len(me.PropagationTypes) > 0 {
 		entries := []interface{}{}
 		for _, entry := range me.PropagationTypes {
-			entries = append(entries, entry)
+			entries = append(entries, string(entry))
 		}
 		result["propagation_types"] = entries
 	}
