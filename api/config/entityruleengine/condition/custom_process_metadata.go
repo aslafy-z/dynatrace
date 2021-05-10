@@ -107,7 +107,7 @@ func (cpmck *CustomProcessMetadata) MarshalJSON() ([]byte, error) {
 		}
 		m["attribute"] = rawMessage
 	}
-	if cpmck.Type != nil {
+	if cpmck.GetType() != nil {
 		rawMessage, err := json.Marshal(ConditionKeyTypes.HostCustomMetadataKey)
 		if err != nil {
 			return nil, err

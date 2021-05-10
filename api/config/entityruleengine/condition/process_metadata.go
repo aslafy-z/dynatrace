@@ -97,7 +97,7 @@ func (pmck *ProcessMetadata) MarshalJSON() ([]byte, error) {
 		}
 		m["attribute"] = rawMessage
 	}
-	if pmck.Type != nil {
+	if pmck.GetType() != nil {
 		rawMessage, err := json.Marshal(ConditionKeyTypes.ProcessPredefinedMetadataKey)
 		if err != nil {
 			return nil, err

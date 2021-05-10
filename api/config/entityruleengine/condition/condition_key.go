@@ -133,7 +133,7 @@ func (bck *BaseConditionKey) MarshalJSON() ([]byte, error) {
 		}
 		m["attribute"] = rawMessage
 	}
-	if bck.Type != nil {
+	if bck.GetType() != nil {
 		rawMessage, err := json.Marshal(*bck.Type)
 		if err != nil {
 			return nil, err

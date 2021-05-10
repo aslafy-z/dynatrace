@@ -106,7 +106,7 @@ func (chmck *CustomHostMetadata) MarshalJSON() ([]byte, error) {
 		}
 		m["attribute"] = rawMessage
 	}
-	if chmck.Type != nil {
+	if chmck.GetType() != nil {
 		rawMessage, err := json.Marshal(ConditionKeyTypes.HostCustomMetadataKey)
 		if err != nil {
 			return nil, err
