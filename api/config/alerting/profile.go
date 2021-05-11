@@ -81,7 +81,7 @@ func (me *Profile) MarshalHCL() (map[string]interface{}, error) {
 	}
 	result["display_name"] = me.DisplayName
 	if me.MzID != nil {
-		result["mz_id"] = me.DisplayName
+		result["mz_id"] = me.MzID
 	}
 	if me.Rules != nil {
 		rules := append([]*ProfileSeverityRule{}, me.Rules...)
