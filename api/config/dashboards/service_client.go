@@ -33,7 +33,7 @@ func (cs *ServiceClient) Create(dashboard *Dashboard) (*api.EntityShortRepresent
 	var bytes []byte
 
 	if len(opt.String(dashboard.ID)) > 0 {
-		return nil, errors.New("You MUST NOT provide an ID within the Dashboard payload upon creation")
+		return nil, errors.New("you MUST NOT provide an ID within the Dashboard payload upon creation")
 	}
 
 	if bytes, err = cs.client.POST("/dashboards", dashboard, 201); err != nil {
@@ -49,7 +49,7 @@ func (cs *ServiceClient) Create(dashboard *Dashboard) (*api.EntityShortRepresent
 // Update TODO: documentation
 func (cs *ServiceClient) Update(dashboard *Dashboard) error {
 	if len(opt.String(dashboard.ID)) == 0 {
-		return errors.New("The Dashboard doesn't contain an ID")
+		return errors.New("the Dashboard doesn't contain an ID")
 	}
 	if _, err := cs.client.PUT(fmt.Sprintf("/dashboards/%s", opt.String(dashboard.ID)), dashboard, 204); err != nil {
 		return err
@@ -60,7 +60,7 @@ func (cs *ServiceClient) Update(dashboard *Dashboard) error {
 // Delete TODO: documentation
 func (cs *ServiceClient) Delete(id string) error {
 	if len(id) == 0 {
-		return errors.New("Empty ID provided for the Dashboard to delete")
+		return errors.New("empty ID provided for the Dashboard to delete")
 	}
 	if _, err := cs.client.DELETE(fmt.Sprintf("/dashboards/%s", id), 204); err != nil {
 		return err
@@ -71,7 +71,7 @@ func (cs *ServiceClient) Delete(id string) error {
 // Get TODO: documentation
 func (cs *ServiceClient) Get(id string) (*Dashboard, error) {
 	if len(id) == 0 {
-		return nil, errors.New("Empty ID provided for the Dashboard to fetch")
+		return nil, errors.New("empty ID provided for the Dashboard to fetch")
 	}
 
 	var err error
