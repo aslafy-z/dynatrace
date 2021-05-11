@@ -128,6 +128,7 @@ func (me *Profile) UnmarshalHCL(decoder hcl.Decoder) error {
 		delete(me.Unknowns, "rules")
 		delete(me.Unknowns, "event_type_filters")
 		delete(me.Unknowns, "metadata")
+		delete(me.Unknowns, "managementZoneId")
 		if len(me.Unknowns) == 0 {
 			me.Unknowns = nil
 		}
@@ -252,6 +253,7 @@ func (me *Profile) UnmarshalJSON(data []byte) error {
 	delete(m, "id")
 	delete(m, "displayName")
 	delete(m, "mzId")
+	delete(m, "managementZoneId")
 	delete(m, "rules")
 	delete(m, "eventTypeFilters")
 	delete(m, "metadata")
