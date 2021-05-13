@@ -30,7 +30,7 @@ func (mzr *Rule) Schema() map[string]*hcl.Schema {
 			Optional:    true,
 		},
 		"propagation_types": {
-			Type:        hcl.TypeList,
+			Type:        hcl.TypeSet,
 			Description: "How to apply the management zone to underlying entities:\n   - `SERVICE_TO_HOST_LIKE`: Apply to underlying hosts of matching services\n   - `SERVICE_TO_PROCESS_GROUP_LIKE`: Apply to underlying process groups of matching services\n   - `PROCESS_GROUP_TO_HOST`: Apply to underlying hosts of matching process groups\n   - `PROCESS_GROUP_TO_SERVICE`: Apply to all services provided by matching process groups\n   - `HOST_TO_PROCESS_GROUP_INSTANCE`: Apply to processes running on matching hosts\n   - `CUSTOM_DEVICE_GROUP_TO_CUSTOM_DEVICE`: Apply to custom devices in matching custom device groups\n   - `AZURE_TO_PG`: Apply to process groups connected to matching Azure entities\n   - `AZURE_TO_SERVICE`: Apply to services provided by matching Azure entities",
 			Optional:    true,
 			Elem:        &hcl.Schema{Type: hcl.TypeString},
@@ -107,12 +107,10 @@ func (mzr *Rule) UnmarshalHCL(decoder hcl.Decoder) error {
 	if _, value := decoder.GetChange("enabled"); value != nil {
 		mzr.Enabled = value.(bool)
 	}
-	if _, ok := decoder.GetOk("propagation_types.#"); ok {
+	if propagationTypes := decoder.GetStringSet("propagation_types"); len(propagationTypes) > 0 {
 		mzr.PropagationTypes = []PropagationType{}
-		if entries, ok := decoder.GetOk("propagation_types"); ok {
-			for _, entry := range entries.([]interface{}) {
-				mzr.PropagationTypes = append(mzr.PropagationTypes, PropagationType(entry.(string)))
-			}
+		for _, propagationType := range propagationTypes {
+			mzr.PropagationTypes = append(mzr.PropagationTypes, PropagationType(propagationType))
 		}
 	}
 	if result, ok := decoder.GetOk("conditions.#"); ok {
