@@ -177,10 +177,16 @@ func (iac *IPAddress) UnmarshalJSON(data []byte) error {
 			return err
 		}
 	}
+	if v, found := m["caseSensitive"]; found {
+		if err := json.Unmarshal(v, &iac.CaseSensitive); err != nil {
+			return err
+		}
+	}
 	delete(m, "negate")
 	delete(m, "operator")
 	delete(m, "value")
 	delete(m, "type")
+	delete(m, "caseSensitive")
 	if len(m) > 0 {
 		iac.Unknowns = m
 	}
