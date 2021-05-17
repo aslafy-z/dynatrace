@@ -10,23 +10,23 @@ import (
 )
 
 // Service TODO: documentation
-type Service struct {
+type ServiceClient struct {
 	client *rest.Client
 }
 
 // NewService TODO: documentation
 // "https://#######.live.dynatrace.com/api/config/v1", "###########"
-func NewService(baseURL string, token string) *Service {
+func NewService(baseURL string, token string) *ServiceClient {
 	rest.Verbose = false
 	credentials := credentials.New(token)
 	config := rest.Config{}
 	client := rest.NewClient(&config, baseURL, credentials)
 
-	return &Service{client: client}
+	return &ServiceClient{client: client}
 }
 
 // Create TODO: documentation
-func (cs *Service) Create(customService *CustomService, technology Technology) (*api.EntityShortRepresentation, error) {
+func (cs *ServiceClient) Create(customService *CustomService, technology Technology) (*api.EntityShortRepresentation, error) {
 	var err error
 	var bytes []byte
 
@@ -41,15 +41,15 @@ func (cs *Service) Create(customService *CustomService, technology Technology) (
 }
 
 // Update TODO: documentation
-func (cs *Service) Update(customService *CustomService, technology Technology) error {
-	if _, err := cs.client.PUT(fmt.Sprintf("/service/customServices/%s/%s", technology, customService.ID), customService, 204); err != nil {
+func (cs *ServiceClient) Update(customService *CustomService, technology Technology) error {
+	if _, err := cs.client.PUT(fmt.Sprintf("/service/customServices/%s/%s", technology, *customService.ID), customService, 204); err != nil {
 		return err
 	}
 	return nil
 }
 
 // Delete TODO: documentation
-func (cs *Service) Delete(id string, technology Technology) error {
+func (cs *ServiceClient) Delete(id string, technology Technology) error {
 	if _, err := cs.client.DELETE(fmt.Sprintf("/service/customServices/%s/%s", technology, id), 204); err != nil {
 		return err
 	}
@@ -57,7 +57,7 @@ func (cs *Service) Delete(id string, technology Technology) error {
 }
 
 // Get TODO: documentation
-func (cs *Service) Get(id string, technology Technology, includeProcessGroupReferences bool) (*CustomService, error) {
+func (cs *ServiceClient) Get(id string, technology Technology, includeProcessGroupReferences bool) (*CustomService, error) {
 	var err error
 	var bytes []byte
 
@@ -72,7 +72,7 @@ func (cs *Service) Get(id string, technology Technology, includeProcessGroupRefe
 }
 
 // List TODO: documentation
-func (cs *Service) List(technology Technology) (*api.StubList, error) {
+func (cs *ServiceClient) List(technology Technology) (*api.StubList, error) {
 	var err error
 	var bytes []byte
 
@@ -84,4 +84,22 @@ func (cs *Service) List(technology Technology) (*api.StubList, error) {
 		return nil, err
 	}
 	return &stubList, nil
+}
+
+// Technology has no documentation
+type Technology string
+
+// Technologies offers the known enum values
+var Technologies = struct {
+	DotNet Technology
+	Go     Technology
+	Java   Technology
+	NodeJS Technology
+	PHP    Technology
+}{
+	"dotNet",
+	"go",
+	"java",
+	"nodeJS",
+	"php",
 }
