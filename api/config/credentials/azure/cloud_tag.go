@@ -9,7 +9,7 @@ import (
 
 // CloudTag A cloud tag.
 type CloudTag struct {
-	Value    *string                    `json:"value,omitempty"` // The value of the tag.   If set to `null`, then resources with any value of the tag are monitored.
+	Value    *string                    `json:"value,omitempty"` // The value of the tag. If set to `null`, then resources with any value of the tag are monitored.
 	Name     *string                    `json:"name,omitempty"`  // The name of the tag.
 	Unknowns map[string]json.RawMessage `json:"-"`
 }
