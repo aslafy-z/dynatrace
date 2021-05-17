@@ -33,7 +33,7 @@ func (cs *ServiceClient) Create(item *RequestAttribute) (*api.EntityShortReprese
 	var bytes []byte
 
 	if len(opt.String(item.ID)) > 0 {
-		return nil, errors.New("You MUST NOT provide an ID within the payload upon creation")
+		return nil, errors.New("you MUST NOT provide an ID within the payload upon creation")
 	}
 
 	if bytes, err = cs.client.POST("/service/requestAttributes", item, 201); err != nil {
@@ -49,7 +49,7 @@ func (cs *ServiceClient) Create(item *RequestAttribute) (*api.EntityShortReprese
 // Update TODO: documentation
 func (cs *ServiceClient) Update(item *RequestAttribute) error {
 	if len(opt.String(item.ID)) == 0 {
-		return errors.New("The item doesn't contain an ID")
+		return errors.New("the item doesn't contain an ID")
 	}
 	if _, err := cs.client.PUT(fmt.Sprintf("/service/requestAttributes/%s", opt.String(item.ID)), item, 204); err != nil {
 		return err
@@ -60,7 +60,7 @@ func (cs *ServiceClient) Update(item *RequestAttribute) error {
 // Delete TODO: documentation
 func (cs *ServiceClient) Delete(id string) error {
 	if len(id) == 0 {
-		return errors.New("Empty ID provided for the item to delete")
+		return errors.New("empty ID provided for the item to delete")
 	}
 	if _, err := cs.client.DELETE(fmt.Sprintf("/service/requestAttributes/%s", id), 204); err != nil {
 		return err
@@ -71,7 +71,7 @@ func (cs *ServiceClient) Delete(id string) error {
 // Get TODO: documentation
 func (cs *ServiceClient) Get(id string) (*RequestAttribute, error) {
 	if len(id) == 0 {
-		return nil, errors.New("Empty ID provided for the MaintenanceWindow to fetch")
+		return nil, errors.New("empty ID provided for the MaintenanceWindow to fetch")
 	}
 
 	var err error
