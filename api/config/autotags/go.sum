@@ -1,7 +1,7 @@
 github.com/dtcookie/dynatrace/api/config v1.0.4 h1:pqzYQLSWEDM0Hp235iJyQdqI5t79U4OoqTbEtmD7k7o=
 github.com/dtcookie/dynatrace/api/config v1.0.4/go.mod h1:RbyqkuV9J1iV97kMpuzyvMPQSKDouse0BZJNSXGropQ=
-github.com/dtcookie/dynatrace/api/config/entityruleengine v1.0.3 h1:LvtGRzm1tiklxOmXUK+8MuscixTQF6SCqlvTi7BogmQ=
-github.com/dtcookie/dynatrace/api/config/entityruleengine v1.0.3/go.mod h1:AE3/TF74Xgf0frl5vZ0fcJXuUDYIdkZt6W2mzCuk9jU=
+github.com/dtcookie/dynatrace/api/config/entityruleengine v1.0.4 h1:rrhbgAkoBXOxP7DXOPA2dvgkoW80rX26UT/4WCbqlIw=
+github.com/dtcookie/dynatrace/api/config/entityruleengine v1.0.4/go.mod h1:AE3/TF74Xgf0frl5vZ0fcJXuUDYIdkZt6W2mzCuk9jU=
 github.com/dtcookie/dynatrace/rest v1.0.14 h1:mNV2Mi/L2RSqC2kbIbN9kDyU+ZREVA4TGQxtSrE6nIc=
 github.com/dtcookie/dynatrace/rest v1.0.14/go.mod h1://1AkUkyFQFG43vhMg2aykz13PgB/4eTUIE8SS+vnNw=
 github.com/dtcookie/hcl v0.0.7 h1:uwkqpAbP8v7QLvNoDcnjqTchs5E9330s8uj65+jwayI=
