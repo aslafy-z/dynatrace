@@ -10,20 +10,21 @@ import (
 
 // KubernetesCredentials Configuration for specific Kubernetes credentials.
 type KubernetesCredentials struct {
-	EventsIntegrationEnabled              *bool                      `json:"eventsIntegrationEnabled,omitempty"`    // The monitoring of events is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. Event monitoring depends on the active state of this configuration to be true.  If not set on creation, the `false` value is used.  If the field is omitted during an update, the old value remains unaffected.
-	AuthToken                             *string                    `json:"authToken,omitempty"`                   // The service account bearer token for the Kubernetes API server.  Submit your token on creation or update of the configuration. For security reasons, GET requests return this field as `null`.  If the field is omitted during an update, the old value remains unaffected.
-	Active                                *bool                      `json:"active,omitempty"`                      // The monitoring is enabled (`true`) or disabled (`false`) for given credentials configuration.  If not set on creation, the `true` value is used.  If the field is omitted during an update, the old value remains unaffected.
-	EndpointStatusInfo                    *string                    `json:"endpointStatusInfo,omitempty"`          // The detailed status info of the configured endpoint.
-	WorkloadIntegrationEnabled            *bool                      `json:"workloadIntegrationEnabled,omitempty"`  // Workload and cloud application processing is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. If the field is omitted during an update, the old value remains unaffected.
-	EndpointStatus                        *EndpointStatus            `json:"endpointStatus,omitempty"`              // The status of the configured endpoint. ASSIGNED: The credentials are assigned to an ActiveGate which is responsible for processing. UNASSIGNED: The credentials are not yet assigned to an ActiveGate so there is currently no processing. DISABLED: The credentials have been disabled by the user. FASTCHECK_AUTH_ERROR: The credentials are invalid. FASTCHECK_TLS_ERROR: The endpoint TLS certificate is invalid. FASTCHECK_NO_RESPONSE: The endpoint did not return a result until the timeout was reached. FASTCHECK_INVALID_ENDPOINT: The endpoint URL was invalid. FASTCHECK_AUTH_LOCKED: The credentials seem to be locked. UNKNOWN: An unknown error occured.
-	Label                                 string                     `json:"label"`                                 // The name of the Kubernetes credentials configuration.  Allowed characters are letters, numbers, whitespaces, and the following characters: `.+-_`. Leading or trailing whitespace is not allowed.
-	ID                                    *string                    `json:"id,omitempty"`                          // The ID of the given credentials configuration.
-	Metadata                              *api.ConfigurationMetadata `json:"metadata,omitempty"`                    // Metadata useful for debugging
-	CertificateCheckEnabled               *bool                      `json:"certificateCheckEnabled,omitempty"`     // The check of SSL certificates is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.  If not set on creation, the `true` value is used.  If the field is omitted during an update, the old value remains unaffected.
-	EndpointURL                           string                     `json:"endpointUrl"`                           // The URL of the Kubernetes API server.  It must be unique within a Dynatrace environment.  The URL must valid according to RFC 2396. Leading or trailing whitespaces are not allowed.
-	HostnameVerificationEnabled           *bool                      `json:"hostnameVerificationEnabled"`           // Verify hostname in certificate against Kubernetes API URL
-	PrometheusExportersIntegrationEnabled *bool                      `json:"prometheusExportersIntegrationEnabled"` // Prometheus exporters integration is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.If the field is omitted during an update, the old value remains unaffected
-	EventsFieldSelectors                  []*KubernetesEventPattern  `json:"eventsFieldSelectors,omitempty"`        // Kubernetes event filters based on field-selectors. If set to `null` on creation, no events field selectors are subscribed. If set to `null` on update, no change of stored events field selectors is applied. Set an empty list to clear all events field selectors.
+	EventsIntegrationEnabled              *bool                      `json:"eventsIntegrationEnabled,omitempty"`      // The monitoring of events is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. Event monitoring depends on the active state of this configuration to be true.  If not set on creation, the `false` value is used.  If the field is omitted during an update, the old value remains unaffected.
+	AuthToken                             *string                    `json:"authToken,omitempty"`                     // The service account bearer token for the Kubernetes API server.  Submit your token on creation or update of the configuration. For security reasons, GET requests return this field as `null`.  If the field is omitted during an update, the old value remains unaffected.
+	Active                                *bool                      `json:"active,omitempty"`                        // The monitoring is enabled (`true`) or disabled (`false`) for given credentials configuration.  If not set on creation, the `true` value is used.  If the field is omitted during an update, the old value remains unaffected.
+	EndpointStatusInfo                    *string                    `json:"endpointStatusInfo,omitempty"`            // The detailed status info of the configured endpoint.
+	WorkloadIntegrationEnabled            *bool                      `json:"workloadIntegrationEnabled,omitempty"`    // Workload and cloud application processing is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. If the field is omitted during an update, the old value remains unaffected.
+	EndpointStatus                        *EndpointStatus            `json:"endpointStatus,omitempty"`                // The status of the configured endpoint. ASSIGNED: The credentials are assigned to an ActiveGate which is responsible for processing. UNASSIGNED: The credentials are not yet assigned to an ActiveGate so there is currently no processing. DISABLED: The credentials have been disabled by the user. FASTCHECK_AUTH_ERROR: The credentials are invalid. FASTCHECK_TLS_ERROR: The endpoint TLS certificate is invalid. FASTCHECK_NO_RESPONSE: The endpoint did not return a result until the timeout was reached. FASTCHECK_INVALID_ENDPOINT: The endpoint URL was invalid. FASTCHECK_AUTH_LOCKED: The credentials seem to be locked. UNKNOWN: An unknown error occured.
+	Label                                 string                     `json:"label"`                                   // The name of the Kubernetes credentials configuration.  Allowed characters are letters, numbers, whitespaces, and the following characters: `.+-_`. Leading or trailing whitespace is not allowed.
+	ID                                    *string                    `json:"id,omitempty"`                            // The ID of the given credentials configuration.
+	Metadata                              *api.ConfigurationMetadata `json:"metadata,omitempty"`                      // Metadata useful for debugging
+	CertificateCheckEnabled               *bool                      `json:"certificateCheckEnabled,omitempty"`       // The check of SSL certificates is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.  If not set on creation, the `true` value is used.  If the field is omitted during an update, the old value remains unaffected.
+	EndpointURL                           string                     `json:"endpointUrl"`                             // The URL of the Kubernetes API server.  It must be unique within a Dynatrace environment.  The URL must valid according to RFC 2396. Leading or trailing whitespaces are not allowed.
+	HostnameVerificationEnabled           *bool                      `json:"hostnameVerificationEnabled"`             // Verify hostname in certificate against Kubernetes API URL
+	PrometheusExportersIntegrationEnabled *bool                      `json:"prometheusExportersIntegrationEnabled"`   // Prometheus exporters integration is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.If the field is omitted during an update, the old value remains unaffected
+	EventsFieldSelectors                  []*KubernetesEventPattern  `json:"eventsFieldSelectors,omitempty"`          // Kubernetes event filters based on field-selectors. If set to `null` on creation, no events field selectors are subscribed. If set to `null` on update, no change of stored events field selectors is applied. Set an empty list to clear all events field selectors.
+	DavisEventsIntegrationEnabled         *bool                      `json:"davisEventsIntegrationEnabled,omitempty"` // Inclusion of all Davis relevant events is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. If the field is omitted during an update, the old value remains unaffected
 	Unknowns                              map[string]json.RawMessage `json:"-"`
 }
 
@@ -57,6 +58,11 @@ func (kc *KubernetesCredentials) Schema() map[string]*hcl.Schema {
 		"prometheus_exporters": {
 			Type:        hcl.TypeBool,
 			Description: "Prometheus exporters integration is enabled (`true`) or disabled (`false`) for the Kubernetes cluster.If the field is omitted during an update, the old value remains unaffected",
+			Optional:    true,
+		},
+		"davis_events_integration_enabled": {
+			Type:        hcl.TypeBool,
+			Description: "Inclusion of all Davis relevant events is enabled (`true`) or disabled (`false`) for the Kubernetes cluster. If the field is omitted during an update, the old value remains unaffected",
 			Optional:    true,
 		},
 		"active": {
@@ -107,6 +113,7 @@ func (kc *KubernetesCredentials) MarshalHCL() (map[string]interface{}, error) {
 	result["workload_integration_enabled"] = opt.Bool(kc.WorkloadIntegrationEnabled)
 	result["certificate_check_enabled"] = opt.Bool(kc.CertificateCheckEnabled)
 	result["events_integration_enabled"] = opt.Bool(kc.EventsIntegrationEnabled)
+	result["davis_events_integration_enabled"] = opt.Bool(kc.DavisEventsIntegrationEnabled)
 
 	result["label"] = kc.Label
 	if kc.AuthToken != nil {
@@ -149,6 +156,7 @@ func (kc *KubernetesCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
 		delete(kc.Unknowns, "events_field_selectors")
 		delete(kc.Unknowns, "hostname_verification")
 		delete(kc.Unknowns, "prometheus_exporters")
+		delete(kc.Unknowns, "davis_events_integration_enabled")
 
 		if len(kc.Unknowns) == 0 {
 			kc.Unknowns = nil
@@ -174,6 +182,9 @@ func (kc *KubernetesCredentials) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if _, value := decoder.GetChange("prometheus_exporters"); value != nil {
 		kc.PrometheusExportersIntegrationEnabled = opt.NewBool(value.(bool))
+	}
+	if _, value := decoder.GetChange("davis_events_integration_enabled"); value != nil {
+		kc.DavisEventsIntegrationEnabled = opt.NewBool(value.(bool))
 	}
 	if value, ok := decoder.GetOk("auth_token"); ok {
 		kc.AuthToken = opt.NewString(value.(string))
@@ -218,6 +229,12 @@ func (kc *KubernetesCredentials) UnmarshalJSON(data []byte) error {
 			return err
 		}
 	}
+	if v, found := m["davisEventsIntegrationEnabled"]; found {
+		if err := json.Unmarshal(v, &kc.DavisEventsIntegrationEnabled); err != nil {
+			return err
+		}
+	}
+
 	if v, found := m["active"]; found {
 		if err := json.Unmarshal(v, &kc.Active); err != nil {
 			return err
@@ -287,6 +304,7 @@ func (kc *KubernetesCredentials) UnmarshalJSON(data []byte) error {
 	delete(m, "eventsFieldSelectors")
 	delete(m, "hostnameVerificationEnabled")
 	delete(m, "prometheusExportersIntegrationEnabled")
+	delete(m, "davisEventsIntegrationEnabled")
 
 	if len(m) > 0 {
 		kc.Unknowns = m
@@ -321,6 +339,13 @@ func (kc *KubernetesCredentials) MarshalJSON() ([]byte, error) {
 			return nil, err
 		}
 		m["prometheusExportersIntegrationEnabled"] = rawMessage
+	}
+	{
+		rawMessage, err := json.Marshal(opt.Bool(kc.DavisEventsIntegrationEnabled))
+		if err != nil {
+			return nil, err
+		}
+		m["davisEventsIntegrationEnabled"] = rawMessage
 	}
 	{
 		rawMessage, err := json.Marshal(opt.Bool(kc.Active))
