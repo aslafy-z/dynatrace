@@ -95,8 +95,8 @@ func (sck *String) MarshalJSON() ([]byte, error) {
 		}
 		m["attribute"] = rawMessage
 	}
-	if sck.Type != nil {
-		rawMessage, err := json.Marshal(ConditionKeyTypes.HostCustomMetadataKey)
+	{
+		rawMessage, err := json.Marshal(ConditionKeyTypes.String)
 		if err != nil {
 			return nil, err
 		}
