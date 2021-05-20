@@ -24,7 +24,7 @@ func NewService(baseURL string, token string) *Service {
 }
 
 // Update TODO: documentation
-func (cs *Service) Update(config *ServiceAnomalyDetectionConfig) error {
+func (cs *Service) Update(config *AnomalyDetection) error {
 	if _, err := cs.client.PUT("/anomalyDetection/services", config, 204); err != nil {
 		return err
 	}
@@ -32,14 +32,14 @@ func (cs *Service) Update(config *ServiceAnomalyDetectionConfig) error {
 }
 
 // Get TODO: documentation
-func (cs *Service) Get() (*ServiceAnomalyDetectionConfig, error) {
+func (cs *Service) Get() (*AnomalyDetection, error) {
 	var err error
 	var bytes []byte
 
 	if bytes, err = cs.client.GET("/anomalyDetection/services", 200); err != nil {
 		return nil, err
 	}
-	var response ServiceAnomalyDetectionConfig
+	var response AnomalyDetection
 	if err = json.Unmarshal(bytes, &response); err != nil {
 		return nil, err
 	}
