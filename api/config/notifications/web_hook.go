@@ -10,10 +10,11 @@ import (
 // WebHookConfig Configuration of the custom WebHook notification.
 type WebHookConfig struct {
 	BaseNotificationConfig
-	AcceptAnyCertificate bool          `json:"acceptAnyCertificate"` // Accept any, including self-signed and invalid, SSL certificate (`true`) or only trusted (`false`) certificates.
-	Headers              []*HTTPHeader `json:"headers,omitempty"`    // A list of the additional HTTP headers.
-	Payload              string        `json:"payload"`              // The content of the notification message.  You can use the following placeholders:  * `{ImpactedEntities}`: Details about the entities impacted by the problem in form of a JSON array.  * `{ImpactedEntity}`: The entity impacted by the problem or *X* impacted entities.  * `{PID}`: The ID of the reported problem.  * `{ProblemDetailsHTML}`: All problem event details, including root cause, as an HTML-formatted string.  * `{ProblemDetailsJSON}`: All problem event details, including root cause, as a JSON object.  * `{ProblemDetailsMarkdown}`: All problem event details, including root cause, as a [Markdown-formatted](https://www.markdownguide.org/cheat-sheet/) string.  * `{ProblemDetailsText}`: All problem event details, including root cause, as a text-formatted string.  * `{ProblemID}`: The display number of the reported problem.  * `{ProblemImpact}`: The [impact level](https://www.dynatrace.com/support/help/shortlink/impact-analysis) of the problem. Possible values are `APPLICATION`, `SERVICE`, and `INFRASTRUCTURE`.  * `{ProblemSeverity}`: The [severity level](https://www.dynatrace.com/support/help/shortlink/event-types) of the problem. Possible values are `AVAILABILITY`, `ERROR`, `PERFORMANCE`, `RESOURCE_CONTENTION`, and `CUSTOM_ALERT`.  * `{ProblemTitle}`: A short description of the problem.  * `{ProblemURL}`: The URL of the problem within Dynatrace.  * `{State}`: The state of the problem. Possible values are `OPEN` and `RESOLVED`.  * `{Tags}`: The list of tags that are defined for all impacted entities, separated by commas.
-	URL                  string        `json:"url"`                  // The URL of the WebHook endpoint.
+	AcceptAnyCertificate     bool          `json:"acceptAnyCertificate"`               // Accept any, including self-signed and invalid, SSL certificate (`true`) or only trusted (`false`) certificates.
+	Headers                  []*HTTPHeader `json:"headers,omitempty"`                  // A list of the additional HTTP headers.
+	Payload                  string        `json:"payload"`                            // The content of the notification message.  You can use the following placeholders:  * `{ImpactedEntities}`: Details about the entities impacted by the problem in form of a JSON array.  * `{ImpactedEntity}`: The entity impacted by the problem or *X* impacted entities.  * `{PID}`: The ID of the reported problem.  * `{ProblemDetailsHTML}`: All problem event details, including root cause, as an HTML-formatted string.  * `{ProblemDetailsJSON}`: All problem event details, including root cause, as a JSON object.  * `{ProblemDetailsMarkdown}`: All problem event details, including root cause, as a [Markdown-formatted](https://www.markdownguide.org/cheat-sheet/) string.  * `{ProblemDetailsText}`: All problem event details, including root cause, as a text-formatted string.  * `{ProblemID}`: The display number of the reported problem.  * `{ProblemImpact}`: The [impact level](https://www.dynatrace.com/support/help/shortlink/impact-analysis) of the problem. Possible values are `APPLICATION`, `SERVICE`, and `INFRASTRUCTURE`.  * `{ProblemSeverity}`: The [severity level](https://www.dynatrace.com/support/help/shortlink/event-types) of the problem. Possible values are `AVAILABILITY`, `ERROR`, `PERFORMANCE`, `RESOURCE_CONTENTION`, and `CUSTOM_ALERT`.  * `{ProblemTitle}`: A short description of the problem.  * `{ProblemURL}`: The URL of the problem within Dynatrace.  * `{State}`: The state of the problem. Possible values are `OPEN` and `RESOLVED`.  * `{Tags}`: The list of tags that are defined for all impacted entities, separated by commas.
+	URL                      string        `json:"url"`                                // The URL of the WebHook endpoint.
+	NotifyEventMergesEnabled *bool         `json:"notifyEventMergesEnabled,omitempty"` // Call webhook if new events merge into existing problems
 }
 
 func (me *WebHookConfig) GetType() Type {
@@ -31,6 +32,11 @@ func (me *WebHookConfig) Schema() map[string]*hcl.Schema {
 			Type:        hcl.TypeBool,
 			Description: "The configuration is enabled (`true`) or disabled (`false`)",
 			Required:    true,
+		},
+		"notify_event_merges": {
+			Type:        hcl.TypeBool,
+			Description: "Call webhook if new events merge into existing problems",
+			Optional:    true,
 		},
 		"alerting_profile": {
 			Type:        hcl.TypeString,
@@ -80,6 +86,9 @@ func (me *WebHookConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}
 	result["active"] = me.Active
 	result["alerting_profile"] = me.AlertingProfile
 	result["accept_any_certificate"] = me.AcceptAnyCertificate
+	if me.NotifyEventMergesEnabled != nil {
+		result["notify_event_merges"] = *me.NotifyEventMergesEnabled
+	}
 	if len(me.Headers) > 0 {
 		entries := []interface{}{}
 		for _, entry := range me.Headers {
@@ -107,8 +116,9 @@ func (me *WebHookConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 		delete(me.Unknowns, "name")
 		delete(me.Unknowns, "active")
-		delete(me.Unknowns, "alerting_profile")
-		delete(me.Unknowns, "accept_any_certificate")
+		delete(me.Unknowns, "alertingProfile")
+		delete(me.Unknowns, "acceptAnyCertificate")
+		delete(me.Unknowns, "notifyEventMergesEnabled")
 		delete(me.Unknowns, "header")
 		delete(me.Unknowns, "payload")
 		delete(me.Unknowns, "url")
@@ -125,6 +135,8 @@ func (me *WebHookConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 	if value, ok := decoder.GetOk("alerting_profile"); ok {
 		me.AlertingProfile = value.(string)
 	}
+	adapter := hcl.Adapt(decoder)
+	me.NotifyEventMergesEnabled = adapter.GetBool("notify_event_merges")
 	if value, ok := decoder.GetOk("accept_any_certificate"); ok {
 		me.AcceptAnyCertificate = value.(bool)
 	}
@@ -150,15 +162,16 @@ func (me *WebHookConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *WebHookConfig) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"id":                   me.ID,
-		"name":                 me.Name,
-		"type":                 me.GetType(),
-		"alertingProfile":      me.AlertingProfile,
-		"active":               me.Active,
-		"acceptAnyCertificate": me.AcceptAnyCertificate,
-		"headers":              me.Headers,
-		"payload":              me.Payload,
-		"url":                  me.URL,
+		"id":                       me.ID,
+		"name":                     me.Name,
+		"type":                     me.GetType(),
+		"alertingProfile":          me.AlertingProfile,
+		"notifyEventMergesEnabled": me.NotifyEventMergesEnabled,
+		"active":                   me.Active,
+		"acceptAnyCertificate":     me.AcceptAnyCertificate,
+		"headers":                  me.Headers,
+		"payload":                  me.Payload,
+		"url":                      me.URL,
 	}); err != nil {
 		return nil, err
 	}
@@ -171,15 +184,16 @@ func (me *WebHookConfig) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
-		"id":                   &me.ID,
-		"name":                 &me.Name,
-		"type":                 &me.Type,
-		"active":               &me.Active,
-		"alertingProfile":      &me.AlertingProfile,
-		"acceptAnyCertificate": &me.AcceptAnyCertificate,
-		"headers":              &me.Headers,
-		"payload":              &me.Payload,
-		"url":                  &me.URL,
+		"id":                       &me.ID,
+		"name":                     &me.Name,
+		"type":                     &me.Type,
+		"active":                   &me.Active,
+		"alertingProfile":          &me.AlertingProfile,
+		"notifyEventMergesEnabled": &me.NotifyEventMergesEnabled,
+		"acceptAnyCertificate":     &me.AcceptAnyCertificate,
+		"headers":                  &me.Headers,
+		"payload":                  &me.Payload,
+		"url":                      &me.URL,
 	}); err != nil {
 		return err
 	}

@@ -107,8 +107,8 @@ func (me *XMattersConfig) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 		delete(me.Unknowns, "name")
 		delete(me.Unknowns, "active")
-		delete(me.Unknowns, "alerting_profile")
-		delete(me.Unknowns, "accept_any_certificate")
+		delete(me.Unknowns, "alertingProfile")
+		delete(me.Unknowns, "acceptAnyCertificate")
 		delete(me.Unknowns, "header")
 		delete(me.Unknowns, "payload")
 		delete(me.Unknowns, "url")
