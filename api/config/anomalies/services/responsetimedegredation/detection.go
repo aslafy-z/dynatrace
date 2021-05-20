@@ -3,7 +3,7 @@ package responsetimedegredation
 import (
 	"encoding/json"
 
-	"github.com/dtcookie/dynatrace/api/config/anomalydetection/services/detection"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/services/detection"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
 )

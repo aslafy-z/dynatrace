@@ -1,4 +1,4 @@
-module github.com/dtcookie/dynatrace/api/config/anomalydetection/services
+module github.com/dtcookie/dynatrace/api/config/anomalies/services
 
 go 1.15
 

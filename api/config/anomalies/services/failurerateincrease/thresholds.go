@@ -3,7 +3,7 @@ package failurerateincrease
 import (
 	"encoding/json"
 
-	"github.com/dtcookie/dynatrace/api/config/anomalydetection/services/sensitivity"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/services/sensitivity"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
 )

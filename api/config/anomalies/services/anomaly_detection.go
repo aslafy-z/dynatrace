@@ -4,9 +4,9 @@ import (
 	"encoding/json"
 
 	api "github.com/dtcookie/dynatrace/api/config"
-	"github.com/dtcookie/dynatrace/api/config/anomalydetection/services/failurerateincrease"
-	"github.com/dtcookie/dynatrace/api/config/anomalydetection/services/load"
-	"github.com/dtcookie/dynatrace/api/config/anomalydetection/services/responsetimedegredation"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/services/failurerateincrease"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/services/load"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/services/responsetimedegredation"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
 )
