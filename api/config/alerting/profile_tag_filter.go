@@ -3,13 +3,14 @@ package alerting
 import (
 	"encoding/json"
 
+	"github.com/dtcookie/dynatrace/api/config/common"
 	"github.com/dtcookie/hcl"
 )
 
 // ProfileTagFilter Configuration of the tag filtering of the alerting profile.
 type ProfileTagFilter struct {
 	IncludeMode IncludeMode                `json:"includeMode"`          // The filtering mode:  * `INCLUDE_ANY`: The rule applies to monitored entities that have at least one of the specified tags. You can specify up to 100 tags.  * `INCLUDE_ALL`: The rule applies to monitored entities that have **all** of the specified tags. You can specify up to 10 tags.  * `NONE`: The rule applies to all monitored entities.
-	TagFilters  []*TagFilter               `json:"tagFilters,omitempty"` // A list of required tags.
+	TagFilters  []*common.TagFilter        `json:"tagFilters,omitempty"` // A list of required tags.
 	Unknowns    map[string]json.RawMessage `json:"-"`
 }
 
@@ -26,7 +27,7 @@ func (me *ProfileTagFilter) Schema() map[string]*hcl.Schema {
 			Optional:    true,
 			MinItems:    1,
 			Elem: &hcl.Resource{
-				Schema: new(TagFilter).Schema(),
+				Schema: new(common.TagFilter).Schema(),
 			},
 		},
 		"unknowns": {
@@ -80,9 +81,9 @@ func (me *ProfileTagFilter) UnmarshalHCL(decoder hcl.Decoder) error {
 		me.IncludeMode = IncludeMode(value.(string))
 	}
 	if result, ok := decoder.GetOk("tag_filters.#"); ok {
-		me.TagFilters = []*TagFilter{}
+		me.TagFilters = []*common.TagFilter{}
 		for idx := 0; idx < result.(int); idx++ {
-			entry := new(TagFilter)
+			entry := new(common.TagFilter)
 			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "tag_filters", idx)); err != nil {
 				return err
 			}
