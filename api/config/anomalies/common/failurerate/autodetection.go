@@ -1,4 +1,4 @@
-package failurerateincrease
+package failurerate
 
 import (
 	"encoding/json"

@@ -1,4 +1,4 @@
-package responsetimedegredation
+package responsetime
 
 import (
 	"encoding/json"

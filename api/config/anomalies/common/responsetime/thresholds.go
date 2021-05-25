@@ -1,10 +1,10 @@
-package responsetimedegredation
+package responsetime
 
 import (
 	"encoding/json"
 
+	"github.com/dtcookie/dynatrace/api/config/anomalies/common"
 	"github.com/dtcookie/dynatrace/api/config/anomalies/common/load"
-	"github.com/dtcookie/dynatrace/api/config/anomalies/common/sensitivity"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
 )
@@ -13,7 +13,7 @@ import (
 //  Required if **detectionMode** is `DETECT_USING_FIXED_THRESHOLDS`. Not applicable otherwise.
 type Thresholds struct {
 	LoadThreshold       load.Threshold             `json:"loadThreshold"`                            // Minimal service load to detect response time degradation.   Response time degradation of services with smaller load won't trigger alerts.
-	Sensitivity         sensitivity.Sensitivity    `json:"sensitivity"`                              // Sensitivity of the threshold.  With `low` sensitivity, high statistical confidence is used. Brief violations (for example, due to a surge in load) won't trigger alerts.  With `high` sensitivity, no statistical confidence is used. Each violation triggers an alert.
+	Sensitivity         common.Sensitivity         `json:"sensitivity"`                              // Sensitivity of the threshold.  With `low` sensitivity, high statistical confidence is used. Brief violations (for example, due to a surge in load) won't trigger alerts.  With `high` sensitivity, no statistical confidence is used. Each violation triggers an alert.
 	Milliseconds        int32                      `json:"responseTimeThresholdMilliseconds"`        // Response time during any 5-minute period to trigger an alert, in milliseconds.
 	SlowestMilliseconds int32                      `json:"slowestResponseTimeThresholdMilliseconds"` // Response time of the 10% slowest during any 5-minute period to trigger an alert, in milliseconds.
 	Unknowns            map[string]json.RawMessage `json:"-"`
@@ -86,7 +86,7 @@ func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
 		me.LoadThreshold = load.Threshold(value.(string))
 	}
 	if value, ok := decoder.GetOk("sensitivity"); ok {
-		me.Sensitivity = sensitivity.Sensitivity(value.(string))
+		me.Sensitivity = common.Sensitivity(value.(string))
 	}
 	if value, ok := decoder.GetOk("milliseconds"); ok {
 		me.Milliseconds = int32(value.(int))

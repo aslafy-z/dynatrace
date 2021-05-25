@@ -1,5 +1,3 @@
-github.com/dtcookie/dynatrace v0.0.0-20210520154842-adab29ca6195 h1:qH1alZ2Bg1UZUlqIJI1H4VVdikugozLqW1hcIbe8T18=
-github.com/dtcookie/dynatrace/api/config v1.0.4 h1:pqzYQLSWEDM0Hp235iJyQdqI5t79U4OoqTbEtmD7k7o=
 github.com/dtcookie/hcl v0.0.8 h1:uTSp8JxjyvUtv1NXU2Wiff0arBZTui8qfmg/V9zebck=
 github.com/dtcookie/hcl v0.0.8/go.mod h1:jtxzoNG5jtCEI00+623fcqOUbB0fviqCVj+LZueZtWs=
 github.com/dtcookie/opt v1.0.0 h1:3YTf76sWRAjcJnTNNCjeJNikT05aOrVlg13xDbX5OGg=

@@ -1,9 +1,9 @@
-package failurerateincrease
+package failurerate
 
 import (
 	"encoding/json"
 
-	"github.com/dtcookie/dynatrace/api/config/anomalies/common/sensitivity"
+	"github.com/dtcookie/dynatrace/api/config/anomalies/common"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
 )
@@ -11,7 +11,7 @@ import (
 // Thresholds Fixed thresholds for failure rate increase detection.
 //  Required if **detectionMode** is `DETECT_USING_FIXED_THRESHOLDS`. Not applicable otherwise.
 type Thresholds struct {
-	Sensitivity sensitivity.Sensitivity    `json:"sensitivity"` // Sensitivity of the threshold.  With `low` sensitivity, high statistical confidence is used. Brief violations (for example, due to a surge in load) won't trigger alerts.  With `high` sensitivity, no statistical confidence is used. Each violation triggers alert.
+	Sensitivity common.Sensitivity         `json:"sensitivity"` // Sensitivity of the threshold.  With `low` sensitivity, high statistical confidence is used. Brief violations (for example, due to a surge in load) won't trigger alerts.  With `high` sensitivity, no statistical confidence is used. Each violation triggers alert.
 	Threshold   int32                      `json:"threshold"`   // Failure rate during any 5-minute period to trigger an alert, %.
 	Unknowns    map[string]json.RawMessage `json:"-"`
 }
@@ -66,7 +66,7 @@ func (me *Thresholds) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 	}
 	if value, ok := decoder.GetOk("sensitivity"); ok {
-		me.Sensitivity = sensitivity.Sensitivity(value.(string))
+		me.Sensitivity = common.Sensitivity(value.(string))
 	}
 	if value, ok := decoder.GetOk("threshold"); ok {
 		me.Threshold = int32(value.(int))
