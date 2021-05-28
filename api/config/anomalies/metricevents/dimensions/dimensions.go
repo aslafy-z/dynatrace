@@ -34,8 +34,8 @@ func (me Dimensions) Schema() map[string]*hcl.Schema {
 func (me Dimensions) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	Entitys := []map[string]interface{}{}
-	Strings := []map[string]interface{}{}
+	Entitys := []interface{}{}
+	Strings := []interface{}{}
 	baseDimensions := []map[string]interface{}{}
 	for _, dimension := range me {
 		switch dim := dimension.(type) {

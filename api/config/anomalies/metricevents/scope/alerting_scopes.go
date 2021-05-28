@@ -76,16 +76,16 @@ func (me AlertingScopes) Schema() map[string]*hcl.Schema {
 func (me AlertingScopes) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	customDeviceGroupNames := []map[string]interface{}{}
-	entityIDs := []map[string]interface{}{}
-	hostGroupNames := []map[string]interface{}{}
-	hostNames := []map[string]interface{}{}
-	managementZones := []map[string]interface{}{}
-	names := []map[string]interface{}{}
-	processGroupIDs := []map[string]interface{}{}
-	processGroupNames := []map[string]interface{}{}
-	scopes := []map[string]interface{}{}
-	tags := []map[string]interface{}{}
+	customDeviceGroupNames := []interface{}{}
+	entityIDs := []interface{}{}
+	hostGroupNames := []interface{}{}
+	hostNames := []interface{}{}
+	managementZones := []interface{}{}
+	names := []interface{}{}
+	processGroupIDs := []interface{}{}
+	processGroupNames := []interface{}{}
+	scopes := []interface{}{}
+	tags := []interface{}{}
 	for _, scope := range me {
 		switch sc := scope.(type) {
 		case *CustomDeviceGroupName:

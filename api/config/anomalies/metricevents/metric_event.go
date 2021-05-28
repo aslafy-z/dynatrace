@@ -260,6 +260,9 @@ func (me *MetricEvent) MarshalJSON() ([]byte, error) {
 
 func (me *MetricEvent) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	wrapper := strategy.Wrapper{}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"id":                  &me.ID,
