@@ -21,14 +21,42 @@ type AnomalyDetection struct {
 	Metadata                *api.ConfigMetadata     `json:"metadata,omitempty"`      // Metadata useful for debugging
 }
 
+func (me *AnomalyDetection) getFailureRateIncrease() *failurerate.Detection {
+	if me.FailureRateIncrease == nil {
+		return &failurerate.Detection{DetectionMode: detection.Modes.DontDetect}
+	}
+	return me.FailureRateIncrease
+}
+
+func (me *AnomalyDetection) getResponseTimeDegradation() *responsetime.Detection {
+	if me.ResponseTimeDegradation == nil {
+		return &responsetime.Detection{DetectionMode: detection.Modes.DontDetect}
+	}
+	return me.ResponseTimeDegradation
+}
+
+func (me *AnomalyDetection) getLoadSpike() *load.SpikeDetection {
+	if me.LoadSpike == nil {
+		return &load.SpikeDetection{Enabled: false}
+	}
+	return me.LoadSpike
+}
+
+func (me *AnomalyDetection) getLoadDrop() *load.DropDetection {
+	if me.LoadDrop == nil {
+		return &load.DropDetection{Enabled: false}
+	}
+	return me.LoadDrop
+}
+
 func (me *AnomalyDetection) Schema() map[string]*hcl.Schema {
 	return map[string]*hcl.Schema{
-		"load_spikes": {
+		"load": {
 			Type:        hcl.TypeList,
 			Optional:    true,
 			MaxItems:    1,
 			Description: "The configuration of load spikes detection. Detecting load spikes will be disabled if this block is omitted.",
-			Elem:        &hcl.Resource{Schema: new(load.SpikeDetection).Schema()},
+			Elem:        &hcl.Resource{Schema: new(load.Detection).Schema()},
 		},
 		"response_times": {
 			Type:        hcl.TypeList,
@@ -57,9 +85,13 @@ func (me *AnomalyDetection) Schema() map[string]*hcl.Schema {
 func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	if me.LoadSpike != nil && me.LoadSpike.Enabled {
-		if marshalled, err := me.LoadSpike.MarshalHCL(hcl.NewDecoder(decoder, "load_spikes", 0)); err == nil {
-			result["load_spikes"] = []interface{}{marshalled}
+	loadDetection := &load.Detection{
+		Drops:  me.LoadDrop,
+		Spikes: me.LoadSpike,
+	}
+	if !loadDetection.IsEmpty() {
+		if marshalled, err := loadDetection.MarshalHCL(hcl.NewDecoder(decoder, "load", 0)); err == nil {
+			result["load"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
@@ -89,11 +121,13 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
-	if _, ok := decoder.GetOk("load_spikes.#"); ok {
-		me.LoadSpike = new(load.SpikeDetection)
-		if err := me.LoadSpike.UnmarshalHCL(hcl.NewDecoder(decoder, "load_spikes", 0)); err != nil {
+	if _, ok := decoder.GetOk("load.#"); ok {
+		loadDetection := new(load.Detection)
+		if err := loadDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "load", 0)); err != nil {
 			return err
 		}
+		me.LoadSpike = loadDetection.Spikes
+		me.LoadDrop = loadDetection.Drops
 	} else {
 		me.LoadSpike = &load.SpikeDetection{Enabled: false}
 	}
@@ -127,10 +161,10 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *AnomalyDetection) MarshalJSON() ([]byte, error) {
 	properties := xjson.Properties{}
 	if err := properties.MarshalAll(map[string]interface{}{
-		"loadSpike":               me.LoadSpike,
-		"responseTimeDegradation": me.ResponseTimeDegradation,
-		"failureRateIncrease":     me.FailureRateIncrease,
-		"loadDrop":                me.LoadDrop,
+		"loadSpike":               me.getLoadSpike(),
+		"responseTimeDegradation": me.getResponseTimeDegradation(),
+		"failureRateIncrease":     me.getFailureRateIncrease(),
+		"loadDrop":                me.getLoadDrop(),
 		"metadata":                me.Metadata,
 	}); err != nil {
 		return nil, err
