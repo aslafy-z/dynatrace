@@ -3,6 +3,7 @@ package metricevents
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/dynatrace/rest"
@@ -75,7 +76,7 @@ func (cs *Service) Get(id string) (*MetricEvent, error) {
 	var err error
 	var bytes []byte
 
-	if bytes, err = cs.client.GET(fmt.Sprintf("/anomalyDetection/metricEvents/%s", id), 200); err != nil {
+	if bytes, err = cs.client.GET(fmt.Sprintf("/anomalyDetection/metricEvents/%s", url.QueryEscape(id)), 200); err != nil {
 		return nil, err
 	}
 	var config MetricEvent
