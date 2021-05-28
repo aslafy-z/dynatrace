@@ -77,16 +77,27 @@ func (me *AnomalyDetection) Schema() map[string]*hcl.Schema {
 }
 
 func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
-	return decoder.MarshalAll(map[string]interface{}{
+	properties, err := decoder.MarshalAll(map[string]interface{}{
 		"name":              me.Name,
 		"host_group_id":     me.HostGroupID,
 		"threshold":         me.Threshold,
 		"enabled":           me.Enabled,
 		"violating_samples": me.ViolatingSamples,
 		"metric":            me.Metric,
-		"disk_name":         me.DiskNameFilter,
 		"tags":              me.TagFilters,
 	})
+	if err != nil {
+		return nil, err
+	}
+	if me.DiskNameFilter != nil {
+		if marshalled, err := me.DiskNameFilter.MarshalHCL(hcl.NewDecoder(decoder, "disk_name", 0)); err != nil {
+			return nil, err
+		} else {
+			properties["disk_name"] = []interface{}{marshalled}
+		}
+
+	}
+	return properties, nil
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
