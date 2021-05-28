@@ -14,13 +14,13 @@ type DetectionConfig struct {
 }
 
 func (me *DetectionConfig) IsConfigured() bool {
-	if me.Speed != nil {
+	if me.Speed != nil && me.Speed.Enabled {
 		return true
 	}
-	if me.Space != nil {
+	if me.Space != nil && me.Space.Enabled {
 		return true
 	}
-	if me.Inodes != nil {
+	if me.Inodes != nil && me.Inodes.Enabled {
 		return true
 	}
 	return false
@@ -80,6 +80,10 @@ func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {
+	me.Speed = &slow.DetectionConfig{Enabled: false}
+	me.Space = &space.DetectionConfig{Enabled: false}
+	me.Inodes = &inodes.DetectionConfig{Enabled: false}
+
 	if _, ok := decoder.GetOk("space.#"); ok {
 		me.Space = new(space.DetectionConfig)
 		if err := me.Space.UnmarshalHCL(hcl.NewDecoder(decoder, "space", 0)); err != nil {

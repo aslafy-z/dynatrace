@@ -1,6 +1,8 @@
 package memory
 
-import "github.com/dtcookie/hcl"
+import (
+	"github.com/dtcookie/hcl"
+)
 
 // Thresholds Custom thresholds for high memory usage. If not set then the automatic mode is used.
 //  **Both** conditions must be met to trigger an alert.
@@ -53,15 +55,17 @@ func (me *Thresholds) Schema() map[string]*hcl.Schema {
 	return map[string]*hcl.Schema{
 		"windows": {
 			Type:        hcl.TypeList,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
+			MinItems:    1,
 			Description: "Custom thresholds for Windows",
 			Elem:        &hcl.Resource{Schema: new(osThresholds).Schema()},
 		},
 		"linux": {
 			Type:        hcl.TypeList,
-			Optional:    true,
+			Required:    true,
 			MaxItems:    1,
+			MinItems:    1,
 			Description: "Custom thresholds for Linux",
 			Elem:        &hcl.Resource{Schema: new(osThresholds).Schema()},
 		},
@@ -71,10 +75,7 @@ func (me *Thresholds) Schema() map[string]*hcl.Schema {
 func (me *Thresholds) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	thrs := &osThresholds{
-		UsedMemoryPercentage: me.UsedMemoryPercentageNonWindows,
-		PageFaultsPerSecond:  me.PageFaultsPerSecondNonWindows,
-	}
+	thrs := &osThresholds{UsedMemoryPercentage: me.UsedMemoryPercentageNonWindows, PageFaultsPerSecond: me.PageFaultsPerSecondNonWindows}
 	if marshalled, err := thrs.MarshalHCL(hcl.NewDecoder(decoder, "linux", 0)); err == nil {
 		result["linux"] = []interface{}{marshalled}
 	} else {

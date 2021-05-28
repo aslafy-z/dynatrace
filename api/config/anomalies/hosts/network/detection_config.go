@@ -19,19 +19,19 @@ type DetectionConfig struct {
 }
 
 func (me *DetectionConfig) IsConfigured() bool {
-	if me.NetworkDroppedPacketsDetection != nil {
+	if me.NetworkDroppedPacketsDetection != nil && me.NetworkDroppedPacketsDetection.Enabled {
 		return true
 	}
-	if me.HighNetworkDetection != nil {
+	if me.HighNetworkDetection != nil && me.HighNetworkDetection.Enabled {
 		return true
 	}
-	if me.NetworkHighRetransmissionDetection != nil {
+	if me.NetworkHighRetransmissionDetection != nil && me.NetworkHighRetransmissionDetection.Enabled {
 		return true
 	}
-	if me.NetworkTcpProblemsDetection != nil {
+	if me.NetworkTcpProblemsDetection != nil && me.NetworkTcpProblemsDetection.Enabled {
 		return true
 	}
-	if me.NetworkErrorsDetection != nil {
+	if me.NetworkErrorsDetection != nil && me.NetworkErrorsDetection.Enabled {
 		return true
 	}
 	return false
@@ -79,35 +79,35 @@ func (me *DetectionConfig) Schema() map[string]*hcl.Schema {
 
 func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
-	if me.NetworkDroppedPacketsDetection != nil {
+	if me.NetworkDroppedPacketsDetection != nil && me.NetworkDroppedPacketsDetection.Enabled {
 		if marshalled, err := me.NetworkDroppedPacketsDetection.MarshalHCL(hcl.NewDecoder(decoder, "dropped_packets", 0)); err == nil {
 			result["dropped_packets"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.HighNetworkDetection != nil {
+	if me.HighNetworkDetection != nil && me.HighNetworkDetection.Enabled {
 		if marshalled, err := me.HighNetworkDetection.MarshalHCL(hcl.NewDecoder(decoder, "utilization", 0)); err == nil {
 			result["utilization"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.NetworkHighRetransmissionDetection != nil {
+	if me.NetworkHighRetransmissionDetection != nil && me.NetworkHighRetransmissionDetection.Enabled {
 		if marshalled, err := me.NetworkHighRetransmissionDetection.MarshalHCL(hcl.NewDecoder(decoder, "retransmission", 0)); err == nil {
 			result["retransmission"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.NetworkTcpProblemsDetection != nil {
+	if me.NetworkTcpProblemsDetection != nil && me.NetworkTcpProblemsDetection.Enabled {
 		if marshalled, err := me.NetworkTcpProblemsDetection.MarshalHCL(hcl.NewDecoder(decoder, "connectivity", 0)); err == nil {
 			result["connectivity"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.NetworkErrorsDetection != nil {
+	if me.NetworkErrorsDetection != nil && me.NetworkErrorsDetection.Enabled {
 		if marshalled, err := me.NetworkErrorsDetection.MarshalHCL(hcl.NewDecoder(decoder, "errors", 0)); err == nil {
 			result["errors"] = []interface{}{marshalled}
 		} else {
@@ -118,12 +118,18 @@ func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {
+	me.NetworkDroppedPacketsDetection = &droppedpackets.DetectionConfig{Enabled: false}
+	me.HighNetworkDetection = &utilization.DetectionConfig{Enabled: false}
+	me.NetworkHighRetransmissionDetection = &retransmission.DetectionConfig{Enabled: false}
+	me.NetworkTcpProblemsDetection = &tcp.DetectionConfig{Enabled: false}
+	me.NetworkErrorsDetection = &errors.DetectionConfig{Enabled: false}
 	if _, ok := decoder.GetOk("dropped_packets.#"); ok {
 		me.NetworkDroppedPacketsDetection = new(droppedpackets.DetectionConfig)
 		if err := me.NetworkDroppedPacketsDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "dropped_packets", 0)); err != nil {
 			return err
 		}
 	}
+
 	if _, ok := decoder.GetOk("utilization.#"); ok {
 		me.HighNetworkDetection = new(utilization.DetectionConfig)
 		if err := me.HighNetworkDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "utilization", 0)); err != nil {

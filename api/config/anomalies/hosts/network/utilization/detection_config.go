@@ -32,10 +32,12 @@ func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface
 	result := map[string]interface{}{}
 
 	result["enabled"] = me.Enabled
-	if marshalled, err := me.CustomThresholds.MarshalHCL(hcl.NewDecoder(decoder, "thresholds", 0)); err == nil {
-		result["thresholds"] = []interface{}{marshalled}
-	} else {
-		return nil, err
+	if me.CustomThresholds != nil {
+		if marshalled, err := me.CustomThresholds.MarshalHCL(hcl.NewDecoder(decoder, "thresholds", 0)); err == nil {
+			result["thresholds"] = []interface{}{marshalled}
+		} else {
+			return nil, err
+		}
 	}
 	return result, nil
 }

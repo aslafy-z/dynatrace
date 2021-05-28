@@ -97,14 +97,14 @@ func (me *AnomalyDetection) Schema() map[string]*hcl.Schema {
 
 func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
-	if me.HighMemoryDetection != nil {
+	if me.HighMemoryDetection != nil && me.HighMemoryDetection.Enabled {
 		if marshalled, err := me.HighMemoryDetection.MarshalHCL(hcl.NewDecoder(decoder, "memory", 0)); err == nil {
 			result["memory"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.HighCPUSaturationDetection != nil {
+	if me.HighCPUSaturationDetection != nil && me.HighCPUSaturationDetection.Enabled {
 		if marshalled, err := me.HighCPUSaturationDetection.MarshalHCL(hcl.NewDecoder(decoder, "cpu_saturation", 0)); err == nil {
 			result["cpu"] = []interface{}{marshalled}
 		} else {
@@ -112,14 +112,14 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 		}
 	}
 
-	if me.HighGcActivityDetection != nil {
+	if me.HighGcActivityDetection != nil && me.HighGcActivityDetection.Enabled {
 		if marshalled, err := me.HighGcActivityDetection.MarshalHCL(hcl.NewDecoder(decoder, "gc", 0)); err == nil {
 			result["gc"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.ConnectionLostDetection != nil {
+	if me.ConnectionLostDetection != nil && me.ConnectionLostDetection.Enabled {
 		if marshalled, err := me.ConnectionLostDetection.MarshalHCL(hcl.NewDecoder(decoder, "connections", 0)); err == nil {
 			result["connections"] = []interface{}{marshalled}
 		} else {
@@ -167,6 +167,21 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 }
 
 func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
+	me.NetworkDroppedPacketsDetection = &droppedpackets.DetectionConfig{Enabled: false}
+	me.HighNetworkDetection = &utilization.DetectionConfig{Enabled: false}
+	me.NetworkHighRetransmissionDetection = &retransmission.DetectionConfig{Enabled: false}
+	me.NetworkTcpProblemsDetection = &tcp.DetectionConfig{Enabled: false}
+	me.NetworkErrorsDetection = &errors.DetectionConfig{Enabled: false}
+	me.DiskSlowWritesAndReadsDetection = &slow.DetectionConfig{Enabled: false}
+	me.DiskLowSpaceDetection = &space.DetectionConfig{Enabled: false}
+	me.DiskLowInodesDetection = &inodes.DetectionConfig{Enabled: false}
+	me.HighMemoryDetection = &memory.DetectionConfig{Enabled: false}
+	me.HighCPUSaturationDetection = &cpu.DetectionConfig{Enabled: false}
+	me.OutOfMemoryDetection = &oom.DetectionConfig{Enabled: false}
+	me.OutOfThreadsDetection = &oot.DetectionConfig{Enabled: false}
+	me.HighGcActivityDetection = &gc.DetectionConfig{Enabled: false}
+	me.ConnectionLostDetection = &connection.LostDetectionConfig{Enabled: false}
+
 	if _, ok := decoder.GetOk("network.#"); ok {
 		cfg := new(network.DetectionConfig)
 
@@ -195,9 +210,9 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 			return err
 		}
 	}
-	if _, ok := decoder.GetOk("cpu_saturation.#"); ok {
+	if _, ok := decoder.GetOk("cpu.#"); ok {
 		me.HighCPUSaturationDetection = new(cpu.DetectionConfig)
-		if err := me.HighCPUSaturationDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "cpu_saturation", 0)); err != nil {
+		if err := me.HighCPUSaturationDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "cpu", 0)); err != nil {
 			return err
 		}
 	}

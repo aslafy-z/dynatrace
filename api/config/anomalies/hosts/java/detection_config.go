@@ -31,10 +31,10 @@ func (me *DetectionConfig) Schema() map[string]*hcl.Schema {
 }
 
 func (me *DetectionConfig) IsConfigured() bool {
-	if me.OutOfMemoryDetection != nil {
+	if me.OutOfMemoryDetection != nil && me.OutOfMemoryDetection.Enabled {
 		return true
 	}
-	if me.OutOfThreadsDetection != nil {
+	if me.OutOfThreadsDetection != nil && me.OutOfThreadsDetection.Enabled {
 		return true
 	}
 	return false
@@ -43,14 +43,14 @@ func (me *DetectionConfig) IsConfigured() bool {
 func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
 	result := map[string]interface{}{}
 
-	if me.OutOfMemoryDetection != nil {
+	if me.OutOfMemoryDetection != nil && me.OutOfMemoryDetection.Enabled {
 		if marshalled, err := me.OutOfMemoryDetection.MarshalHCL(hcl.NewDecoder(decoder, "out_of_memory", 0)); err == nil {
 			result["out_of_memory"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
 	}
-	if me.OutOfThreadsDetection != nil {
+	if me.OutOfThreadsDetection != nil && me.OutOfThreadsDetection.Enabled {
 		if marshalled, err := me.OutOfThreadsDetection.MarshalHCL(hcl.NewDecoder(decoder, "out_of_threads", 0)); err == nil {
 			result["out_of_threads"] = []interface{}{marshalled}
 		} else {
@@ -61,6 +61,9 @@ func (me *DetectionConfig) MarshalHCL(decoder hcl.Decoder) (map[string]interface
 }
 
 func (me *DetectionConfig) UnmarshalHCL(decoder hcl.Decoder) error {
+	me.OutOfMemoryDetection = &oom.DetectionConfig{Enabled: false}
+	me.OutOfThreadsDetection = &oot.DetectionConfig{Enabled: false}
+
 	if _, ok := decoder.GetOk("out_of_threads.#"); ok {
 		me.OutOfThreadsDetection = new(oot.DetectionConfig)
 		if err := me.OutOfThreadsDetection.UnmarshalHCL(hcl.NewDecoder(decoder, "out_of_threads", 0)); err != nil {
