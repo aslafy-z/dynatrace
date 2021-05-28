@@ -18,11 +18,6 @@ type SpikeDetection struct {
 
 func (me *SpikeDetection) Schema() map[string]*hcl.Schema {
 	return map[string]*hcl.Schema{
-		// "enabled": {
-		// 	Type:        hcl.TypeBool,
-		// 	Required:    true,
-		// 	Description: "The detection is enabled (`true`) or disabled (`false`)",
-		// },
 		"percent": {
 			Type:        hcl.TypeInt,
 			Optional:    true,
@@ -51,7 +46,6 @@ func (me *SpikeDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interface{
 		}
 		result["unknowns"] = string(data)
 	}
-	// result["enabled"] = me.Enabled
 	if me.LoadSpikePercent != nil {
 		result["percent"] = int(*me.LoadSpikePercent)
 	}
@@ -76,7 +70,6 @@ func (me *SpikeDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 			me.Unknowns = nil
 		}
 	}
-	// adapter := hcl.Adapt(decoder)
 	me.Enabled = true
 	if value, ok := decoder.GetOk("percent"); ok {
 		me.LoadSpikePercent = opt.NewInt32(int32(value.(int)))
