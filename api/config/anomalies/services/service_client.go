@@ -31,6 +31,14 @@ func (cs *Service) Update(config *AnomalyDetection) error {
 	return nil
 }
 
+// Validate TODO: documentation
+func (cs *Service) Validate(config *AnomalyDetection) error {
+	if _, err := cs.client.POST("/anomalyDetection/services/validator", config, 204); err != nil {
+		return err
+	}
+	return nil
+}
+
 // Get TODO: documentation
 func (cs *Service) Get() (*AnomalyDetection, error) {
 	var err error
