@@ -18,7 +18,7 @@ type AnomalyDetection struct {
 	Samples          int32               `json:"samples"`                  // The number of samples to evaluate.
 	ViolatingSamples int32               `json:"violatingSamples"`         // The number of samples that must violate the threshold to trigger an event. Must not exceed the number of evaluated samples.
 	Metric           Metric              `json:"metric"`                   // The metric to monitor.
-	TagFilters       common.TagFilters   `json:"tagFilters,omitempty"`     // Narrows the rule usage down to the hosts matching the specified tags.
+	TagFilters       TagFilters          `json:"tagFilters,omitempty"`     // Narrows the rule usage down to the hosts matching the specified tags.
 	Metadata         *api.ConfigMetadata `json:"metadata,omitempty"`       // Metadata useful for debugging
 }
 
@@ -84,7 +84,6 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 		"enabled":           me.Enabled,
 		"violating_samples": me.ViolatingSamples,
 		"metric":            me.Metric,
-		"tags":              me.TagFilters,
 	})
 	if err != nil {
 		return nil, err
@@ -96,6 +95,13 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 			properties["disk_name"] = []interface{}{marshalled}
 		}
 
+	}
+	if me.TagFilters != nil {
+		if marshalled, err := me.TagFilters.MarshalHCL(hcl.NewDecoder(decoder, "tags", 0)); err != nil {
+			return nil, err
+		} else {
+			properties["tags"] = []interface{}{marshalled}
+		}
 	}
 	return properties, nil
 }
@@ -115,7 +121,7 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 		}
 	}
 	if _, ok := decoder.GetOk("tags.#"); ok {
-		me.TagFilters = common.TagFilters{}
+		me.TagFilters = TagFilters{}
 		if err := me.TagFilters.UnmarshalHCL(hcl.NewDecoder(decoder, "tags", 0)); err != nil {
 			return err
 		}
