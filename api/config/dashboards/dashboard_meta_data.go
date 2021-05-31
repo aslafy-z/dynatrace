@@ -176,7 +176,7 @@ func (me *DashboardMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if _, ok := decoder.GetOk("filter.#"); ok {
 		me.Filter = new(DashboardFilter)
-		if err := me.Filter.UnmarshalHCL(hcl.NewDecoder(decoder, "dashboard_filter", 0)); err != nil {
+		if err := me.Filter.UnmarshalHCL(hcl.NewDecoder(decoder, "filter", 0)); err != nil {
 			return err
 		}
 	}

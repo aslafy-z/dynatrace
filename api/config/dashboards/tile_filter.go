@@ -3,7 +3,6 @@ package dashboards
 import (
 	"encoding/json"
 
-	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/opt"
 	"github.com/dtcookie/xjson"
@@ -12,7 +11,7 @@ import (
 // TileFilter is filter applied to a tile. It overrides dashboard's filter
 type TileFilter struct {
 	Timeframe      *string                    `json:"timeframe,omitempty"` // the default timeframe of the dashboard
-	ManagementZone *api.EntityRef             `json:"managementZone,omitempty"`
+	ManagementZone *EntityRef                 `json:"managementZone,omitempty"`
 	Unknowns       map[string]json.RawMessage `json:"-"`
 }
 
@@ -33,7 +32,7 @@ func (me *TileFilter) Schema() map[string]*hcl.Schema {
 			MinItems:    1,
 			Description: "the management zone this tile applies to",
 			Elem: &hcl.Resource{
-				Schema: new(api.EntityRef).Schema(),
+				Schema: new(EntityRef).Schema(),
 			},
 		},
 		"unknowns": {
@@ -87,7 +86,7 @@ func (me *TileFilter) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 
 	if _, ok := decoder.GetOk("management_zone.#"); ok {
-		me.ManagementZone = new(api.EntityRef)
+		me.ManagementZone = new(EntityRef)
 		if err := me.ManagementZone.UnmarshalHCL(hcl.NewDecoder(decoder, "management_zone", 0)); err != nil {
 			return err
 		}
