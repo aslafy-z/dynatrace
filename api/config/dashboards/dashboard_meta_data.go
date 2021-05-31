@@ -124,7 +124,7 @@ func (me *DashboardMetadata) MarshalHCL() (map[string]interface{}, error) {
 	}
 	if me.Filter != nil {
 		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
-			result["filter"] = []interface{}{marshalled}
+			result["dashboard_filter"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
