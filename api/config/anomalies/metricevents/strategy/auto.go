@@ -78,7 +78,7 @@ func (me *Auto) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) 
 		result["alerting_on_missing_data"] = *me.AlertingOnMissingData
 	}
 	result["dealerting_samples"] = int(me.DealertingSamples)
-	result["signal_fluctuations"] = float64(me.DealertingSamples)
+	result["signal_fluctuations"] = float64(me.NumberOfSignalFluctuations)
 	result["samples"] = int(me.Samples)
 	result["violating_samples"] = int(me.ViolatingSamples)
 	return result, nil
@@ -143,6 +143,9 @@ func (me *Auto) MarshalJSON() ([]byte, error) {
 
 func (me *Auto) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"type":                       &me.Type,
 		"alertCondition":             &me.AlertCondition,

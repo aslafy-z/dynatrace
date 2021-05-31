@@ -91,6 +91,9 @@ func (me *CustomDeviceGroupName) MarshalJSON() ([]byte, error) {
 
 func (me *CustomDeviceGroupName) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"filterType": &me.FilterType,
 		"nameFilter": &me.NameFilter,

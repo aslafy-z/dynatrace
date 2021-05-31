@@ -87,6 +87,9 @@ func (me *BaseMonitoringStrategy) MarshalJSON() ([]byte, error) {
 
 func (me *BaseMonitoringStrategy) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"type": &me.Type,
 	}); err != nil {

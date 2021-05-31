@@ -80,6 +80,9 @@ func (me *ProcessGroupID) MarshalJSON() ([]byte, error) {
 
 func (me *ProcessGroupID) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"filterType":     &me.FilterType,
 		"processGroupId": &me.ID,

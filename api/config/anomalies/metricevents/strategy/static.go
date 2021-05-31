@@ -152,6 +152,9 @@ func (me *Static) MarshalJSON() ([]byte, error) {
 
 func (me *Static) UnmarshalJSON(data []byte) error {
 	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
 	if err := properties.UnmarshalAll(map[string]interface{}{
 		"type":                  &me.Type,
 		"alertCondition":        &me.AlertCondition,
