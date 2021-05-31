@@ -1,7 +1,6 @@
 package network
 
 import (
-	"github.com/dtcookie/dynatrace/api/config/anomalies/hosts/connection"
 	"github.com/dtcookie/dynatrace/api/config/anomalies/hosts/network/droppedpackets"
 	"github.com/dtcookie/dynatrace/api/config/anomalies/hosts/network/errors"
 	"github.com/dtcookie/dynatrace/api/config/anomalies/hosts/network/retransmission"
@@ -72,7 +71,7 @@ func (me *DetectionConfig) Schema() map[string]*hcl.Schema {
 			Optional:    true,
 			MaxItems:    1,
 			Description: "Configuration of high number of network errors detection",
-			Elem:        &hcl.Resource{Schema: new(connection.LostDetectionConfig).Schema()},
+			Elem:        &hcl.Resource{Schema: new(errors.DetectionConfig).Schema()},
 		},
 	}
 }
