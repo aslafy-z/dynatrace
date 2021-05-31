@@ -1,10 +1,13 @@
 package diskevents
 
 import (
+	"encoding/json"
+
 	api "github.com/dtcookie/dynatrace/api/config"
 	"github.com/dtcookie/dynatrace/api/config/common"
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/opt"
+	"github.com/dtcookie/xjson"
 )
 
 // AnomalyDetection has no documentation
@@ -77,11 +80,13 @@ func (me *AnomalyDetection) Schema() map[string]*hcl.Schema {
 }
 
 func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interface{}, error) {
+
 	properties, err := decoder.MarshalAll(map[string]interface{}{
 		"name":              me.Name,
 		"threshold":         me.Threshold,
 		"enabled":           me.Enabled,
 		"violating_samples": me.ViolatingSamples,
+		"samples":           me.Samples,
 		"metric":            me.Metric,
 	})
 	if err != nil {
@@ -98,7 +103,7 @@ func (me *AnomalyDetection) MarshalHCL(decoder hcl.Decoder) (map[string]interfac
 		}
 
 	}
-	if me.TagFilters != nil {
+	if len(me.TagFilters) > 0 {
 		if marshalled, err := me.TagFilters.MarshalHCL(hcl.NewDecoder(decoder, "tags", 0)); err != nil {
 			return nil, err
 		} else {
@@ -112,9 +117,13 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 	reader := hcl.NewReader(decoder, nil)
 	me.Name = opt.String(reader.String("name"))
 	me.HostGroupID = reader.String("host_group_id")
+	if me.HostGroupID != nil && len(*me.HostGroupID) == 0 {
+		me.HostGroupID = nil
+	}
 	me.Threshold = opt.Float64(reader.Float64("threshold"))
 	me.Enabled = opt.Bool(reader.Bool("enabled"))
 	me.ViolatingSamples = opt.Int32(reader.Int32("violating_samples"))
+	me.Samples = opt.Int32(reader.Int32("samples"))
 	me.Metric = Metric(opt.String(reader.String("metric")))
 	if _, ok := decoder.GetOk("disk_name.#"); ok {
 		me.DiskNameFilter = new(DiskNameFilter)
@@ -127,6 +136,49 @@ func (me *AnomalyDetection) UnmarshalHCL(decoder hcl.Decoder) error {
 		if err := me.TagFilters.UnmarshalHCL(hcl.NewDecoder(decoder, "tags", 0)); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func (me *AnomalyDetection) MarshalJSON() ([]byte, error) {
+	properties := xjson.Properties{}
+	if err := properties.MarshalAll(map[string]interface{}{
+		"id":               me.ID,
+		"name":             me.Name,
+		"hostGroupId":      me.HostGroupID,
+		"threshold":        me.Threshold,
+		"enabled":          me.Enabled,
+		"samples":          me.Samples,
+		"violatingSamples": me.ViolatingSamples,
+		"metric":           me.Metric,
+		"diskNameFilter":   me.DiskNameFilter,
+		"tagFilters":       me.TagFilters,
+		"metadata":         me.Metadata,
+	}); err != nil {
+		return nil, err
+	}
+	return json.Marshal(properties)
+}
+
+func (me *AnomalyDetection) UnmarshalJSON(data []byte) error {
+	properties := xjson.Properties{}
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
+	if err := properties.UnmarshalAll(map[string]interface{}{
+		"id":               &me.ID,
+		"name":             &me.Name,
+		"hostGroupId":      &me.HostGroupID,
+		"threshold":        &me.Threshold,
+		"enabled":          &me.Enabled,
+		"samples":          &me.Samples,
+		"violatingSamples": &me.ViolatingSamples,
+		"metric":           &me.Metric,
+		"diskNameFilter":   &me.DiskNameFilter,
+		"tagFilters":       &me.TagFilters,
+		"metadata":         &me.Metadata,
+	}); err != nil {
+		return err
 	}
 	return nil
 }
