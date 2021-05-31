@@ -48,7 +48,7 @@ func (me *DashboardMetadata) Schema() map[string]*hcl.Schema {
 				Schema: new(SharingInfo).Schema(),
 			},
 		},
-		"dashboard_filter": {
+		"filter": {
 			Type:        hcl.TypeList,
 			Optional:    true,
 			MaxItems:    1,
@@ -124,7 +124,7 @@ func (me *DashboardMetadata) MarshalHCL() (map[string]interface{}, error) {
 	}
 	if me.Filter != nil {
 		if marshalled, err := me.Filter.MarshalHCL(); err == nil {
-			result["dashboard_filter"] = []interface{}{marshalled}
+			result["filter"] = []interface{}{marshalled}
 		} else {
 			return nil, err
 		}
@@ -174,7 +174,7 @@ func (me *DashboardMetadata) UnmarshalHCL(decoder hcl.Decoder) error {
 			return err
 		}
 	}
-	if _, ok := decoder.GetOk("dashboard_filter.#"); ok {
+	if _, ok := decoder.GetOk("filter.#"); ok {
 		me.Filter = new(DashboardFilter)
 		if err := me.Filter.UnmarshalHCL(hcl.NewDecoder(decoder, "dashboard_filter", 0)); err != nil {
 			return err
