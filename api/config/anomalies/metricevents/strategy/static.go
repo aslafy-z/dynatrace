@@ -121,6 +121,9 @@ func (me *Static) UnmarshalHCL(decoder hcl.Decoder) error {
 	if value, ok := decoder.GetOk("dealerting_samples"); ok {
 		me.DealertingSamples = int32(value.(int))
 	}
+	if value, ok := decoder.GetOk("samples"); ok {
+		me.Samples = int32(value.(int))
+	}
 	if value, ok := decoder.GetOk("unit"); ok {
 		me.Unit = Unit(value.(string))
 	}

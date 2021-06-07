@@ -1,11 +1,95 @@
 package comparisoninfo
 
+import (
+	"encoding/json"
+
+	"github.com/dtcookie/hcl"
+	"github.com/dtcookie/xjson"
+)
+
 // ServiceType Comparison for `SERVICE_TYPE` attributes.
 type ServiceType struct {
-	BaseComparisonInfo                       // `json:",type=SERVICE_TYPE"`
-	Comparison         ServiceTypeComparison `json:"comparison"`       // Operator of the comparision. You can reverse it by setting **negate** to `true`.
-	Value              *ServiceTypeValue     `json:"value,omitempty"`  // The value to compare to.
-	Values             []ServiceTypeValue    `json:"values,omitempty"` // The values to compare to.
+	BaseComparisonInfo
+	Comparison ServiceTypeComparison `json:"comparison"`       // Operator of the comparision. You can reverse it by setting **negate** to `true`.
+	Value      *ServiceTypeValue     `json:"value,omitempty"`  // The value to compare to.
+	Values     []ServiceTypeValue    `json:"values,omitempty"` // The values to compare to.
+}
+
+func (me *ServiceType) GetType() Type {
+	return Types.Number
+}
+
+func (me *ServiceType) Schema() map[string]*hcl.Schema {
+	return map[string]*hcl.Schema{
+		"values": {
+			Type:        hcl.TypeSet,
+			Optional:    true,
+			MinItems:    1,
+			Description: "The values to compare to. Possible values are `BACKGROUND_ACTIVITY`, `CICS_SERVICE`, `CUSTOM_SERVICE`, `DATABASE_SERVICE`, `ENTERPRISE_SERVICE_BUS_SERVICE`, `EXTERNAL`, `IBM_INTEGRATION_BUS_SERVICE`, `IMS_SERVICE`, `MESSAGING_SERVICE`, `RMI_SERVICE`, `RPC_SERVICE`, `WEB_REQUEST_SERVICE` and `WEB_SERVICE`",
+			Elem:        &hcl.Schema{Type: hcl.TypeString},
+		},
+		"value": {
+			Type:        hcl.TypeString,
+			Optional:    true,
+			Description: "The value to compare to. Possible values are `BACKGROUND_ACTIVITY`, `CICS_SERVICE`, `CUSTOM_SERVICE`, `DATABASE_SERVICE`, `ENTERPRISE_SERVICE_BUS_SERVICE`, `EXTERNAL`, `IBM_INTEGRATION_BUS_SERVICE`, `IMS_SERVICE`, `MESSAGING_SERVICE`, `RMI_SERVICE`, `RPC_SERVICE`, `WEB_REQUEST_SERVICE` and `WEB_SERVICE`",
+		},
+		"operator": {
+			Type:        hcl.TypeString,
+			Optional:    true,
+			Description: "Operator of the comparison. You can reverse it by setting `negate` to `true`. Possible values are `EQUALS`, `EQUALS_ANY_OF` and `EXISTS`",
+		},
+		"unknowns": {
+			Type:        hcl.TypeString,
+			Description: "allows for configuring properties that are not explicitly supported by the current version of this provider",
+			Optional:    true,
+		},
+	}
+}
+
+func (me *ServiceType) MarshalHCL() (map[string]interface{}, error) {
+	properties, err := hcl.NewProperties(me, me.Unknowns)
+	if err != nil {
+		return nil, err
+	}
+	return properties.EncodeAll(map[string]interface{}{
+		"values":   me.Values,
+		"value":    me.Value,
+		"operator": me.Comparison,
+		"unknowns": me.Unknowns,
+	})
+}
+
+func (me *ServiceType) UnmarshalHCL(decoder hcl.Decoder) error {
+	return decoder.DecodeAll(map[string]interface{}{
+		"values":   &me.Values,
+		"value":    &me.Value,
+		"operator": &me.Comparison,
+		"unknowns": &me.Unknowns,
+	})
+}
+
+func (me *ServiceType) MarshalJSON() ([]byte, error) {
+	properties := xjson.NewProperties(me.Unknowns)
+	if err := properties.MarshalAll(map[string]interface{}{
+		"values":   me.Values,
+		"value":    me.Value,
+		"operator": me.Comparison,
+	}); err != nil {
+		return nil, err
+	}
+	return json.Marshal(properties)
+}
+
+func (me *ServiceType) UnmarshalJSON(data []byte) error {
+	properties := xjson.NewProperties(me.Unknowns)
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
+	return properties.UnmarshalAll(map[string]interface{}{
+		"values":   &me.Values,
+		"value":    &me.Value,
+		"operator": &me.Comparison,
+	})
 }
 
 // ServiceTypeComparison Operator of the comparision. You can reverse it by setting **negate** to `true`.

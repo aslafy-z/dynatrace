@@ -22,14 +22,14 @@ type Type string
 // Types offers the known enum values
 var Types = struct {
 	Boolean                Type
-	EsbInputNodeType       Type
+	ESBInputNodeType       Type
 	FailedState            Type
 	FailureReason          Type
 	FastString             Type
 	FlawState              Type
 	HTTPMethod             Type
 	HTTPStatusClass        Type
-	IibInputNodeType       Type
+	IIBInputNodeType       Type
 	Number                 Type
 	NumberRequestAttribute Type
 	ServiceType            Type

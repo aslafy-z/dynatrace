@@ -1,7 +1,10 @@
 package service
 
 import (
+	"encoding/json"
+
 	"github.com/dtcookie/hcl"
+	"github.com/dtcookie/xjson"
 )
 
 // CalculatedMetricDefinition The definition of a calculated service metric.
@@ -23,6 +26,42 @@ func (me *CalculatedMetricDefinition) Schema() map[string]*hcl.Schema {
 			Description: "The request attribute to be captured. Only applicable when the **metric** parameter is set to `REQUEST_ATTRIBUTE`",
 		},
 	}
+}
+
+func (me *CalculatedMetricDefinition) MarshalHCL() (map[string]interface{}, error) {
+	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+		"metric":            me.Metric,
+		"request_attribute": me.RequestAttribute,
+	})
+}
+
+func (me *CalculatedMetricDefinition) UnmarshalHCL(decoder hcl.Decoder) error {
+	return decoder.DecodeAll(map[string]interface{}{
+		"metric":            &me.Metric,
+		"request_attribute": &me.RequestAttribute,
+	})
+}
+
+func (me *CalculatedMetricDefinition) MarshalJSON() ([]byte, error) {
+	properties := xjson.Properties{}
+	if err := properties.MarshalAll(map[string]interface{}{
+		"metric":           me.Metric,
+		"requestAttribute": me.RequestAttribute,
+	}); err != nil {
+		return nil, err
+	}
+	return json.Marshal(properties)
+}
+
+func (me *CalculatedMetricDefinition) UnmarshalJSON(data []byte) error {
+	properties := xjson.Properties{}
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
+	return properties.UnmarshalAll(map[string]interface{}{
+		"metric":           &me.Metric,
+		"requestAttribute": &me.RequestAttribute,
+	})
 }
 
 // Metric The metric to be captured.
