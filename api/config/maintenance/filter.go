@@ -2,6 +2,7 @@ package maintenance
 
 import (
 	"encoding/json"
+	"sort"
 
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/opt"
@@ -72,7 +73,7 @@ func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
 	}
 	if len(me.Tags) > 0 {
 		entries := []interface{}{}
-		for _, entry := range me.Tags {
+		for _, entry := range sortTags(me.Tags) {
 			if marshalled, err := entry.MarshalHCL(); err == nil {
 				entries = append(entries, marshalled)
 			} else {
@@ -82,6 +83,34 @@ func (me *Filter) MarshalHCL() (map[string]interface{}, error) {
 		result["tags"] = entries
 	}
 	return result, nil
+}
+
+func sortTags(tags []*TagInfo) []*TagInfo {
+	if tags == nil {
+		return nil
+	}
+	if len(tags) == 0 {
+		return tags
+	}
+	result := []*TagInfo{}
+	keys := []string{}
+	for _, tag := range tags {
+		keys = append(keys, tag.Key)
+	}
+	sort.Strings(keys)
+	for _, key := range keys {
+		result = append(result, getTag(key, tags))
+	}
+	return result
+}
+
+func getTag(key string, tags []*TagInfo) *TagInfo {
+	for _, tag := range tags {
+		if tag.Key == key {
+			return tag
+		}
+	}
+	return nil
 }
 
 func (me *Filter) UnmarshalHCL(decoder hcl.Decoder) error {
