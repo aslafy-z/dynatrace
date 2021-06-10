@@ -16,7 +16,7 @@ type ServiceType struct {
 }
 
 func (me *ServiceType) GetType() Type {
-	return Types.Number
+	return Types.ServiceType
 }
 
 func (me *ServiceType) Schema() map[string]*hcl.Schema {
@@ -71,9 +71,11 @@ func (me *ServiceType) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *ServiceType) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"values":   me.Values,
-		"value":    me.Value,
-		"operator": me.Comparison,
+		"type":       me.GetType(),
+		"negate":     me.Negate,
+		"values":     me.Values,
+		"value":      me.Value,
+		"comparison": me.Comparison,
 	}); err != nil {
 		return nil, err
 	}
@@ -86,9 +88,10 @@ func (me *ServiceType) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
-		"values":   &me.Values,
-		"value":    &me.Value,
-		"operator": &me.Comparison,
+		"negate":     &me.Negate,
+		"values":     &me.Values,
+		"value":      &me.Value,
+		"comparison": &me.Comparison,
 	})
 }
 

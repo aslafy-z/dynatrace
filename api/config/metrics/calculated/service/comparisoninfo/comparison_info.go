@@ -2,6 +2,7 @@ package comparisoninfo
 
 import (
 	"encoding/json"
+	"fmt"
 
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
@@ -12,6 +13,7 @@ import (
 type ComparisonInfo interface {
 	GetType() Type
 	SetNegate(bool)
+	IsNegate() bool
 }
 
 // BaseComparisonInfo Type-specific comparison for attributes. The actual set of fields depends on the `type` of the comparison.
@@ -24,6 +26,10 @@ type BaseComparisonInfo struct {
 
 func (me *BaseComparisonInfo) SetNegate(negate bool) {
 	me.Negate = negate
+}
+
+func (me *BaseComparisonInfo) IsNegate() bool {
+	return me.Negate
 }
 
 func (me *BaseComparisonInfo) Schema() map[string]*hcl.Schema {
@@ -50,6 +56,7 @@ func (me *BaseComparisonInfo) MarshalHCL() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
+	fmt.Printf("BaseComparisonInfo.Unknowns: %v", me.Unknowns)
 	return properties.EncodeAll(map[string]interface{}{
 		"type":     me.Type,
 		"unknowns": me.Unknowns,
@@ -66,7 +73,8 @@ func (me *BaseComparisonInfo) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *BaseComparisonInfo) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"type": me.Type,
+		"negate": me.Negate,
+		"type":   me.Type,
 	}); err != nil {
 		return nil, err
 	}
@@ -78,7 +86,12 @@ func (me *BaseComparisonInfo) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
-		"type": &me.Type,
-	})
+	if err := properties.UnmarshalAll(map[string]interface{}{
+		"negate": &me.Negate,
+		"type":   &me.Type,
+	}); err != nil {
+		return err
+	}
+	me.Unknowns = properties
+	return nil
 }

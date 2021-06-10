@@ -99,9 +99,11 @@ func (me *NumberRequestAttribute) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *NumberRequestAttribute) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
+		"type":              me.GetType(),
+		"negate":            me.Negate,
 		"values":            me.Values,
 		"value":             me.Value,
-		"operator":          me.Comparison,
+		"comparison":        me.Comparison,
 		"matchOnChildCalls": me.MatchOnChildCalls,
 		"requestAttribute":  me.RequestAttribute,
 		"source":            me.Source,
@@ -117,9 +119,10 @@ func (me *NumberRequestAttribute) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
+		"negate":            &me.Negate,
 		"values":            &me.Values,
 		"value":             &me.Value,
-		"operator":          &me.Comparison,
+		"comparison":        &me.Comparison,
 		"matchOnChildCalls": &me.MatchOnChildCalls,
 		"requestAttribute":  &me.RequestAttribute,
 		"source":            &me.Source,

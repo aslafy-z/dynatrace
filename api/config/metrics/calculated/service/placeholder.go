@@ -2,6 +2,7 @@ package service
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dtcookie/dynatrace/api/config/metrics/calculated/service/propagation"
 	"github.com/dtcookie/hcl"
@@ -108,7 +109,7 @@ func (me *Placeholder) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *Placeholder) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]interface{}{
 		"name":                 &me.Name,
 		"aggregation":          &me.Aggregation,
 		"attribute":            &me.Attribute,
@@ -121,6 +122,8 @@ func (me *Placeholder) UnmarshalHCL(decoder hcl.Decoder) error {
 		"source":               &me.Source,
 		"unknowns":             &me.Unknowns,
 	})
+	log.Printf("normalization: %v", *me.Normalization)
+	return err
 }
 
 func (me *Placeholder) MarshalJSON() ([]byte, error) {

@@ -42,7 +42,7 @@ func (me *CalculatedServiceMetric) Schema() map[string]*hcl.Schema {
 			Description: "The unit of the metric. Possible values are `BIT`, `BIT_PER_HOUR`, `BIT_PER_MINUTE`, `BIT_PER_SECOND`, `BYTE`, `BYTE_PER_HOUR`, `BYTE_PER_MINUTE`, `BYTE_PER_SECOND`, `CORES`, `COUNT`, `DAY`, `DECIBEL_MILLI_WATT`, `GIBI_BYTE`, `GIGA`, `GIGA_BYTE`, `HOUR`, `KIBI_BYTE`, `KIBI_BYTE_PER_HOUR`, `KIBI_BYTE_PER_MINUTE`, `KIBI_BYTE_PER_SECOND`, `KILO`, `KILO_BYTE`, `KILO_BYTE_PER_HOUR`, `KILO_BYTE_PER_MINUTE`, `KILO_BYTE_PER_SECOND`, `MEBI_BYTE`, `MEBI_BYTE_PER_HOUR`, `MEBI_BYTE_PER_MINUTE`, `MEBI_BYTE_PER_SECOND`, `MEGA`, `MEGA_BYTE`, `MEGA_BYTE_PER_HOUR`, `MEGA_BYTE_PER_MINUTE`, `MEGA_BYTE_PER_SECOND`, `MICRO_SECOND`, `MILLI_CORES`, `MILLI_SECOND`, `MILLI_SECOND_PER_MINUTE`, `MINUTE`, `MONTH`, `MSU`, `NANO_SECOND`, `NANO_SECOND_PER_MINUTE`, `NOT_APPLICABLE`, `PERCENT`, `PER_HOUR`, `PER_MINUTE`, `PER_SECOND`, `PIXEL`, `PROMILLE`, `RATIO`, `SECOND`, `STATE`, `UNSPECIFIED`, `WEEK` and `YEAR`",
 		},
 		"enabled": {
-			Type:        hcl.TypeString,
+			Type:        hcl.TypeBool,
 			Optional:    true,
 			Description: "The metric is enabled (`true`) or disabled (`false`)",
 		},
@@ -112,7 +112,7 @@ func (me *CalculatedServiceMetric) MarshalHCL() (map[string]interface{}, error) 
 }
 
 func (me *CalculatedServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]interface{}{
 		"entity_id":            &me.EntityID,
 		"name":                 &me.Name,
 		"unit":                 &me.Unit,
@@ -125,6 +125,10 @@ func (me *CalculatedServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error {
 		"conditions":           &me.Conditions,
 		"unknowns":             &me.Unknowns,
 	})
+	if me.UnitDisplayName == nil || len(*me.UnitDisplayName) == 0 {
+		me.UnitDisplayName = nil
+	}
+	return err
 }
 
 func (me *CalculatedServiceMetric) MarshalJSON() ([]byte, error) {
@@ -152,7 +156,7 @@ func (me *CalculatedServiceMetric) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	err := properties.UnmarshalAll(map[string]interface{}{
 		"entityId":            &me.EntityID,
 		"name":                &me.Name,
 		"unit":                &me.Unit,
@@ -165,6 +169,10 @@ func (me *CalculatedServiceMetric) UnmarshalJSON(data []byte) error {
 		"conditions":          &me.Conditions,
 		"metadata":            &me.Metadata,
 	})
+	if me.UnitDisplayName != nil && len(*me.UnitDisplayName) == 0 {
+		me.UnitDisplayName = nil
+	}
+	return err
 }
 
 // Unit The unit of the metric.

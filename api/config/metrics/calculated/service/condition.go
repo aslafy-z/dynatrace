@@ -61,8 +61,8 @@ func (me *Condition) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *Condition) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"attribute":  me.Attribute,
-		"comparison": me.ComparisonInfo,
+		"attribute":      me.Attribute,
+		"comparisonInfo": me.ComparisonInfo,
 	}); err != nil {
 		return nil, err
 	}
@@ -76,8 +76,8 @@ func (me *Condition) UnmarshalJSON(data []byte) error {
 	}
 	compWrap := comparisoninfo.Wrapper{Comparison: me.ComparisonInfo}
 	if err := properties.UnmarshalAll(map[string]interface{}{
-		"attribute":  &me.Attribute,
-		"comparison": &compWrap,
+		"attribute":      &me.Attribute,
+		"comparisonInfo": &compWrap,
 	}); err != nil {
 		return err
 	}

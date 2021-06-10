@@ -71,9 +71,11 @@ func (me *ESBInputNodeType) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *ESBInputNodeType) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"values":   me.Values,
-		"value":    me.Value,
-		"operator": me.Comparison,
+		"type":       me.GetType(),
+		"negate":     me.Negate,
+		"values":     me.Values,
+		"value":      me.Value,
+		"comparison": me.Comparison,
 	}); err != nil {
 		return nil, err
 	}
@@ -86,9 +88,10 @@ func (me *ESBInputNodeType) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
-		"values":   &me.Values,
-		"value":    &me.Value,
-		"operator": &me.Comparison,
+		"negate":     &me.Negate,
+		"values":     &me.Values,
+		"value":      &me.Value,
+		"comparison": &me.Comparison,
 	})
 }
 

@@ -50,9 +50,9 @@ func (me *TagInfo) MarshalHCL() (map[string]interface{}, error) {
 
 func (me *TagInfo) UnmarshalHCL(decoder hcl.Decoder) error {
 	return decoder.DecodeAll(map[string]interface{}{
-		"key":     me.Key,
-		"value":   me.Value,
-		"context": me.Context,
+		"key":     &me.Key,
+		"value":   &me.Value,
+		"context": &me.Context,
 	})
 }
 
@@ -74,9 +74,9 @@ func (me *TagInfo) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
-		"key":     me.Key,
-		"value":   me.Value,
-		"context": me.Context,
+		"key":     &me.Key,
+		"value":   &me.Value,
+		"context": &me.Context,
 	})
 }
 
@@ -112,13 +112,14 @@ func (me TagInfos) Schema() map[string]*hcl.Schema {
 		"value": {
 			Type:        hcl.TypeList,
 			MinItems:    1,
+			Optional:    true,
 			Description: "The values to compare to",
 			Elem:        &hcl.Resource{Schema: new(TagInfo).Schema()},
 		},
 	}
 }
 
-func (me *TagInfos) MarshalHCL() (map[string]interface{}, error) {
+func (me TagInfos) MarshalHCL() (map[string]interface{}, error) {
 	return hcl.Properties{}.EncodeSlice("value", me)
 }
 

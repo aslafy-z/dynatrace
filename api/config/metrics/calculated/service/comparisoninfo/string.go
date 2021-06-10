@@ -79,9 +79,11 @@ func (me *String) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *String) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
+		"type":          me.GetType(),
+		"negate":        me.Negate,
 		"values":        me.Values,
 		"value":         me.Value,
-		"operator":      me.Comparison,
+		"comparison":    me.Comparison,
 		"caseSensitive": me.CaseSensitive,
 	}); err != nil {
 		return nil, err
@@ -94,12 +96,14 @@ func (me *String) UnmarshalJSON(data []byte) error {
 	if err := json.Unmarshal(data, &properties); err != nil {
 		return err
 	}
-	return properties.UnmarshalAll(map[string]interface{}{
+	err := properties.UnmarshalAll(map[string]interface{}{
+		"negate":        &me.Negate,
 		"values":        &me.Values,
 		"value":         &me.Value,
-		"operator":      &me.Comparison,
+		"comparison":    &me.Comparison,
 		"caseSensitive": &me.CaseSensitive,
 	})
+	return err
 }
 
 // StringComparison Operator of the comparision. You can reverse it by setting **negate** to `true`.

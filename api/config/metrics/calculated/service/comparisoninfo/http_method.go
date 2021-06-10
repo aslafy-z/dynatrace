@@ -2,6 +2,7 @@ package comparisoninfo
 
 import (
 	"encoding/json"
+	"log"
 
 	"github.com/dtcookie/hcl"
 	"github.com/dtcookie/xjson"
@@ -60,20 +61,24 @@ func (me *HTTPMethod) MarshalHCL() (map[string]interface{}, error) {
 }
 
 func (me *HTTPMethod) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]interface{}{
 		"values":   &me.Values,
 		"value":    &me.Value,
 		"operator": &me.Comparison,
 		"unknowns": &me.Unknowns,
 	})
+	log.Printf("values: %v", me.Values)
+	return err
 }
 
 func (me *HTTPMethod) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"values":   me.Values,
-		"value":    me.Value,
-		"operator": me.Comparison,
+		"type":       me.GetType(),
+		"negate":     me.Negate,
+		"values":     me.Values,
+		"value":      me.Value,
+		"comparison": me.Comparison,
 	}); err != nil {
 		return nil, err
 	}
@@ -86,9 +91,10 @@ func (me *HTTPMethod) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
-		"values":   &me.Values,
-		"value":    &me.Value,
-		"operator": &me.Comparison,
+		"negate":     &me.Negate,
+		"values":     &me.Values,
+		"value":      &me.Value,
+		"comparison": &me.Comparison,
 	})
 }
 

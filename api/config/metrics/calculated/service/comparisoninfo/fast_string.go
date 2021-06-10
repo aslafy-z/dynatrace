@@ -79,9 +79,11 @@ func (me *FastString) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *FastString) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
+		"type":          me.GetType(),
+		"negate":        me.Negate,
 		"values":        me.Values,
 		"value":         me.Value,
-		"operator":      me.Comparison,
+		"comparison":    me.Comparison,
 		"caseSensitive": me.CaseSensitive,
 	}); err != nil {
 		return nil, err
@@ -95,9 +97,10 @@ func (me *FastString) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
+		"negate":        &me.Negate,
 		"values":        &me.Values,
 		"value":         &me.Value,
-		"operator":      &me.Comparison,
+		"comparison":    &me.Comparison,
 		"caseSensitive": &me.CaseSensitive,
 	})
 }

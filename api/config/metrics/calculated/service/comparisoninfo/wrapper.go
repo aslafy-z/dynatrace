@@ -1,9 +1,11 @@
 package comparisoninfo
 
 import (
+	"encoding/json"
 	"fmt"
 
 	"github.com/dtcookie/hcl"
+	"github.com/dtcookie/xjson"
 )
 
 type Wrapper struct {
@@ -19,164 +21,147 @@ func (me *Wrapper) Schema() map[string]*hcl.Schema {
 			Description: "Reverse the comparison **operator**. For example, it turns **equals** into **does not equal**",
 		},
 		"boolean": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Boolean Comparison for `BOOLEAN` attributes",
-			Elem:          &hcl.Resource{Schema: new(Boolean).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Boolean Comparison for `BOOLEAN` attributes",
+			Elem:        &hcl.Resource{Schema: new(Boolean).Schema()},
 		},
 		"esb_input_node_type": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Type-specific comparison information for attributes of type 'ESB_INPUT_NODE_TYPE'",
-			Elem:          &hcl.Resource{Schema: new(ESBInputNodeType).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Type-specific comparison information for attributes of type 'ESB_INPUT_NODE_TYPE'",
+			Elem:        &hcl.Resource{Schema: new(ESBInputNodeType).Schema()},
 		},
 		"failed_state": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `FAILED_STATE` attributes",
-			Elem:          &hcl.Resource{Schema: new(FailedState).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `FAILED_STATE` attributes",
+			Elem:        &hcl.Resource{Schema: new(FailedState).Schema()},
 		},
 		"failure_reason": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `FAILURE_REASON` attributes",
-			Elem:          &hcl.Resource{Schema: new(FailureReason).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `FAILURE_REASON` attributes",
+			Elem:        &hcl.Resource{Schema: new(FailureReason).Schema()},
 		},
 		"fast_string": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `FAST_STRING` attributes. Use it for all service property attributes",
-			Elem:          &hcl.Resource{Schema: new(FastString).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `FAST_STRING` attributes. Use it for all service property attributes",
+			Elem:        &hcl.Resource{Schema: new(FastString).Schema()},
 		},
 		"flaw_state": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `FLAW_STATE` attributes",
-			Elem:          &hcl.Resource{Schema: new(FlawState).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `FLAW_STATE` attributes",
+			Elem:        &hcl.Resource{Schema: new(FlawState).Schema()},
 		},
 		"http_method": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `HTTP_METHOD` attributes",
-			Elem:          &hcl.Resource{Schema: new(HTTPMethod).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `HTTP_METHOD` attributes",
+			Elem:        &hcl.Resource{Schema: new(HTTPMethod).Schema()},
 		},
 		"http_status_class": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `HTTP_STATUS_CLASS` attributes",
-			Elem:          &hcl.Resource{Schema: new(HTTPStatusClass).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `HTTP_STATUS_CLASS` attributes",
+			Elem:        &hcl.Resource{Schema: new(HTTPStatusClass).Schema()},
 		},
 		"iib_input_node_type": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `IIB_INPUT_NODE_TYPE` attributes",
-			Elem:          &hcl.Resource{Schema: new(IIBInputNodeType).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `IIB_INPUT_NODE_TYPE` attributes",
+			Elem:        &hcl.Resource{Schema: new(IIBInputNodeType).Schema()},
 		},
 		"number": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `NUMBER` attributes",
-			Elem:          &hcl.Resource{Schema: new(Number).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `NUMBER` attributes",
+			Elem:        &hcl.Resource{Schema: new(Number).Schema()},
 		},
 		"number_request_attribute": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "service_type", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `NUMBER_REQUEST_ATTRIBUTE` attributes",
-			Elem:          &hcl.Resource{Schema: new(NumberRequestAttribute).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `NUMBER_REQUEST_ATTRIBUTE` attributes",
+			Elem:        &hcl.Resource{Schema: new(NumberRequestAttribute).Schema()},
 		},
 		"service_type": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "string", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `SERVICE_TYPE` attributes",
-			Elem:          &hcl.Resource{Schema: new(ServiceType).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `SERVICE_TYPE` attributes",
+			Elem:        &hcl.Resource{Schema: new(ServiceType).Schema()},
 		},
 		"string": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string_request_attribute", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `STRING` attributes",
-			Elem:          &hcl.Resource{Schema: new(String).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `STRING` attributes",
+			Elem:        &hcl.Resource{Schema: new(String).Schema()},
 		},
 		"string_request_attribute": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "tag", "zos_call_type", "generic"},
-			Description:   "Comparison for `STRING_REQUEST_ATTRIBUTE` attributes",
-			Elem:          &hcl.Resource{Schema: new(StringRequestAttribute).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `STRING_REQUEST_ATTRIBUTE` attributes",
+			Elem:        &hcl.Resource{Schema: new(StringRequestAttribute).Schema()},
 		},
 		"tag": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "zos_call_type", "generic"},
-			Description:   "Comparison for `TAG` attributes",
-			Elem:          &hcl.Resource{Schema: new(Tag).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `TAG` attributes",
+			Elem:        &hcl.Resource{Schema: new(Tag).Schema()},
 		},
 		"zos_call_type": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "generic"},
-			Description:   "Comparison for `ZOS_CALL_TYPE` attributes",
-			Elem:          &hcl.Resource{Schema: new(ZOSCallType).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `ZOS_CALL_TYPE` attributes",
+			Elem:        &hcl.Resource{Schema: new(ZOSCallType).Schema()},
 		},
 		"generic": {
-			Type:          hcl.TypeList,
-			Optional:      true,
-			MaxItems:      1,
-			MinItems:      1,
-			ConflictsWith: []string{"boolean", "esb_input_node_type", "failed_state", "failure_reason", "fast_string", "flaw_state", "http_method", "http_status_class", "iib_input_node_type", "number", "number_request_attribute", "service_type", "string", "string_request_attribute", "tag", "zos_call_type"},
-			Description:   "Comparison for `NUMBER` attributes",
-			Elem:          &hcl.Resource{Schema: new(BaseComparisonInfo).Schema()},
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MaxItems:    1,
+			MinItems:    1,
+			Description: "Comparison for `NUMBER` attributes",
+			Elem:        &hcl.Resource{Schema: new(BaseComparisonInfo).Schema()},
 		},
 	}
 }
 
 func (me *Wrapper) MarshalHCL() (map[string]interface{}, error) {
 	properties := hcl.Properties{}
-	properties.Encode("negate", me.Negate)
+	properties.Encode("negate", me.Comparison.IsNegate())
 	switch cmp := me.Comparison.(type) {
 	case *Boolean:
 		if err := properties.Encode("boolean", cmp); err != nil {
@@ -264,7 +249,7 @@ func (me *Wrapper) MarshalHCL() (map[string]interface{}, error) {
 		}
 		return properties, nil
 	default:
-		return nil, fmt.Errorf("cannot HCL marshal objects of type %T", cmp)
+		return nil, fmt.Errorf("cannot HCL marshal objects (xxx) of type %T", cmp)
 	}
 }
 
@@ -296,6 +281,143 @@ func (me *Wrapper) UnmarshalHCL(decoder hcl.Decoder) error {
 	}
 	if cmp != nil {
 		me.Comparison = cmp.(ComparisonInfo)
+		me.Comparison.SetNegate(me.Negate)
+	}
+	return nil
+}
+
+func (me *Wrapper) UnmarshalJSON(data []byte) error {
+	properties := xjson.Properties{}
+	if err := json.Unmarshal(data, &properties); err != nil {
+		return err
+	}
+	var compType string
+	if err := properties.UnmarshalAll(map[string]interface{}{
+		"negate": &me.Negate,
+		"type":   &compType,
+	}); err != nil {
+		return err
+	}
+	switch compType {
+	case "STRING":
+		cfg := new(String)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "NUMBER":
+		cfg := new(Number)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "BOOLEAN":
+		cfg := new(Boolean)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "HTTP_METHOD":
+		cfg := new(HTTPMethod)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "STRING_REQUEST_ATTRIBUTE":
+		cfg := new(StringRequestAttribute)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "NUMBER_REQUEST_ATTRIBUTE":
+		cfg := new(NumberRequestAttribute)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "ZOS_CALL_TYPE":
+		cfg := new(ZOSCallType)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "IIB_INPUT_NODE_TYPE":
+		cfg := new(IIBInputNodeType)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "ESB_INPUT_NODE_TYPE":
+		cfg := new(ESBInputNodeType)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "FAILED_STATE":
+		cfg := new(FailedState)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "FLAW_STATE":
+		cfg := new(FlawState)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "FAILURE_REASON":
+		cfg := new(FailureReason)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "HTTP_STATUS_CLASS":
+		cfg := new(HTTPStatusClass)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "TAG":
+		cfg := new(Tag)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "FAST_STRING":
+		cfg := new(FastString)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	case "SERVICE_TYPE":
+		cfg := new(ServiceType)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
+	default:
+		cfg := new(BaseComparisonInfo)
+		if err := json.Unmarshal(data, &cfg); err != nil {
+			return err
+		}
+		cfg.Negate = me.Negate
+		me.Comparison = cfg
 	}
 	return nil
 }

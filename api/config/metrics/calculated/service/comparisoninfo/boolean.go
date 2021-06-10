@@ -22,18 +22,16 @@ func (me *Boolean) GetType() Type {
 func (me *Boolean) Schema() map[string]*hcl.Schema {
 	return map[string]*hcl.Schema{
 		"values": {
-			Type:          hcl.TypeSet,
-			ConflictsWith: []string{"value"},
-			Optional:      true,
-			MinItems:      1,
-			Description:   "The values to compare to",
-			Elem:          &hcl.Schema{Type: hcl.TypeBool},
+			Type:        hcl.TypeSet,
+			Optional:    true,
+			MinItems:    1,
+			Description: "The values to compare to",
+			Elem:        &hcl.Schema{Type: hcl.TypeBool},
 		},
 		"value": {
-			Type:          hcl.TypeBool,
-			ConflictsWith: []string{"values"},
-			Optional:      true,
-			Description:   "The value to compare to",
+			Type:        hcl.TypeBool,
+			Optional:    true,
+			Description: "The value to compare to",
 		},
 		"operator": {
 			Type:        hcl.TypeString,
@@ -73,9 +71,11 @@ func (me *Boolean) UnmarshalHCL(decoder hcl.Decoder) error {
 func (me *Boolean) MarshalJSON() ([]byte, error) {
 	properties := xjson.NewProperties(me.Unknowns)
 	if err := properties.MarshalAll(map[string]interface{}{
-		"values":   me.Values,
-		"value":    me.Value,
-		"operator": me.Comparison,
+		"type":       me.GetType(),
+		"negate":     me.Negate,
+		"values":     me.Values,
+		"value":      me.Value,
+		"comparison": me.Comparison,
 	}); err != nil {
 		return nil, err
 	}
@@ -88,9 +88,10 @@ func (me *Boolean) UnmarshalJSON(data []byte) error {
 		return err
 	}
 	return properties.UnmarshalAll(map[string]interface{}{
-		"values":   &me.Values,
-		"value":    &me.Value,
-		"operator": &me.Comparison,
+		"negate":     &me.Negate,
+		"values":     &me.Values,
+		"value":      &me.Value,
+		"comparison": &me.Comparison,
 	})
 }
 
