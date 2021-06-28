@@ -29,6 +29,14 @@ func (me *Tag) Schema() map[string]*hcl.Schema {
 			Description: "The values to compare to",
 			Elem:        &hcl.Resource{Schema: new(TagInfos).Schema()},
 		},
+		"value": {
+			Type:        hcl.TypeList,
+			Optional:    true,
+			MinItems:    1,
+			MaxItems:    1,
+			Description: "The values to compare to",
+			Elem:        &hcl.Resource{Schema: new(TagInfo).Schema()},
+		},
 		"operator": {
 			Type:        hcl.TypeString,
 			Optional:    true,
