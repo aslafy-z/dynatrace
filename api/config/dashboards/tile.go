@@ -368,6 +368,12 @@ func (me *Tile) MarshalJSON() ([]byte, error) {
 			return nil, err
 		}
 		m["assignedEntities"] = rawMessage
+	} else {
+		rawMessage, err := json.Marshal([]string{})
+		if err != nil {
+			return nil, err
+		}
+		m["assignedEntities"] = rawMessage
 	}
 	if me.Metric != nil {
 		rawMessage, err := json.Marshal(me.Metric)
