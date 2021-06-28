@@ -30,7 +30,7 @@ func (me *ProfileSeverityRule) Schema() map[string]*hcl.Schema {
 		"tag_filter": {
 			Type:        hcl.TypeList,
 			Description: "Configuration of the tag filtering of the alerting profile",
-			Required:    false,
+			Required:    true,
 			MinItems:    1,
 			Elem: &hcl.Resource{
 				Schema: new(ProfileTagFilter).Schema(),
