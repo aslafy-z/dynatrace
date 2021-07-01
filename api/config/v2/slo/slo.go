@@ -127,6 +127,22 @@ func (me *SLO) MarshalHCL() (map[string]interface{}, error) {
 			res["rate"] = mr
 		}
 	}
+	if me.MetricNumerator != nil {
+		var mr = *me.MetricNumerator
+		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
+			mr = mr[0 : len(mr)-len(":splitBy()")]
+			me.MetricNumerator = &mr
+			res["numerator"] = mr
+		}
+	}
+	if me.MetricDenominator != nil {
+		var mr = *me.MetricDenominator
+		if strings.HasSuffix(mr, ":splitBy():splitBy()") {
+			mr = mr[0 : len(mr)-len(":splitBy()")]
+			me.MetricDenominator = &mr
+			res["denominator"] = mr
+		}
+	}
 	return res, nil
 }
 
