@@ -29,5 +29,5 @@ func (put *Put) OnResponse(fn func(int) error) *Put {
 
 // Send TODO: documentation
 func (put *Put) Send() ([]byte, error) {
-	return put.client.send(put.path, http.MethodPut, put.payload, put.expectedStatusCode, put.onResponse)
+	return put.client.send(put.path, http.MethodPut, put.payload, put.expectedStatusCode, put.onResponse, nil)
 }

@@ -96,7 +96,7 @@ func (client *Client) GET(path string, expectedStatusCode int) ([]byte, error) {
 	if httpResponse, err = client.httpClient.Do(request); err != nil {
 		return make([]byte, 0), err
 	}
-	return readHTTPResponse(httpResponse, http.MethodGet, url, expectedStatusCode, nil)
+	return readHTTPResponse(httpResponse, http.MethodGet, url, expectedStatusCode, nil, nil)
 }
 
 // NewPOST TODO: documentation
@@ -111,7 +111,7 @@ func (client *Client) NewPUT(path string, payload interface{}) *Put {
 
 // POST TODO: documentation
 func (client *Client) POST(path string, payload interface{}, expectedStatusCode int) ([]byte, error) {
-	return client.send(path, http.MethodPost, payload, expectedStatusCode, nil)
+	return client.send(path, http.MethodPost, payload, expectedStatusCode, nil, nil)
 }
 
 // DELETE TODO: documentation
@@ -134,15 +134,15 @@ func (client *Client) DELETE(path string, expectedStatusCode int) ([]byte, error
 	if httpResponse, err = client.httpClient.Do(request); err != nil {
 		return make([]byte, 0), err
 	}
-	return readHTTPResponse(httpResponse, http.MethodDelete, url, expectedStatusCode, nil)
+	return readHTTPResponse(httpResponse, http.MethodDelete, url, expectedStatusCode, nil, nil)
 }
 
 // PUT TODO: documentation
 func (client *Client) PUT(path string, payload interface{}, expectedStatusCode int) ([]byte, error) {
-	return client.send(path, http.MethodPut, payload, expectedStatusCode, nil)
+	return client.send(path, http.MethodPut, payload, expectedStatusCode, nil, nil)
 }
 
-func (client *Client) send(path string, method string, payload interface{}, expectedStatusCode int, onResponse func(int) error) ([]byte, error) {
+func (client *Client) send(path string, method string, payload interface{}, expectedStatusCode int, onResponse func(int) error, customize func(*http.Response)) ([]byte, error) {
 	var err error
 	var request *http.Request
 	var httpResponse *http.Response
@@ -169,10 +169,10 @@ func (client *Client) send(path string, method string, payload interface{}, expe
 	if httpResponse, err = client.httpClient.Do(request); err != nil {
 		return nil, err
 	}
-	return readHTTPResponse(httpResponse, method, url, expectedStatusCode, onResponse)
+	return readHTTPResponse(httpResponse, method, url, expectedStatusCode, onResponse, customize)
 }
 
-func readHTTPResponse(httpResponse *http.Response, method string, url string, expectedStatusCode int, onResponse func(int) error) ([]byte, error) {
+func readHTTPResponse(httpResponse *http.Response, method string, url string, expectedStatusCode int, onResponse func(int) error, customize func(*http.Response)) ([]byte, error) {
 	var err error
 	var body []byte
 	defer httpResponse.Body.Close()
@@ -222,6 +222,10 @@ func readHTTPResponse(httpResponse *http.Response, method string, url string, ex
 				return cleanBody, nil
 			}
 		}
+	}
+
+	if customize != nil {
+		customize(httpResponse)
 	}
 
 	return body, nil
