@@ -51,12 +51,18 @@ func (me *Number) MarshalHCL() (map[string]interface{}, error) {
 	if err != nil {
 		return nil, err
 	}
-	return properties.EncodeAll(map[string]interface{}{
+	if _, err = properties.EncodeAll(map[string]interface{}{
 		"values":   me.Values,
 		"value":    me.Value,
 		"operator": me.Comparison,
 		"unknowns": me.Unknowns,
-	})
+	}); err != nil {
+		return nil, err
+	}
+	// if len(me.Values) > 0 {
+	// 	properties["values"] = me.Values
+	// }
+	return properties, nil
 }
 
 func (me *Number) UnmarshalHCL(decoder hcl.Decoder) error {

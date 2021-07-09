@@ -9,7 +9,7 @@ import (
 
 // CalculatedMetricDefinition The definition of a calculated service metric.
 type CalculatedMetricDefinition struct {
-	Metric           Metric  `json:"metric"`                     // The metric to be captured.
+	Metric           *Metric `json:"metric"`                     // The metric to be captured.
 	RequestAttribute *string `json:"requestAttribute,omitempty"` // The request attribute to be captured. Only applicable when the **metric** parameter is set to `REQUEST_ATTRIBUTE`.
 }
 
@@ -29,17 +29,19 @@ func (me *CalculatedMetricDefinition) Schema() map[string]*hcl.Schema {
 }
 
 func (me *CalculatedMetricDefinition) MarshalHCL() (map[string]interface{}, error) {
-	return hcl.Properties{}.EncodeAll(map[string]interface{}{
+	res, err := hcl.Properties{}.EncodeAll(map[string]interface{}{
 		"metric":            me.Metric,
 		"request_attribute": me.RequestAttribute,
 	})
+	return res, err
 }
 
 func (me *CalculatedMetricDefinition) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	err := decoder.DecodeAll(map[string]interface{}{
 		"metric":            &me.Metric,
 		"request_attribute": &me.RequestAttribute,
 	})
+	return err
 }
 
 func (me *CalculatedMetricDefinition) MarshalJSON() ([]byte, error) {

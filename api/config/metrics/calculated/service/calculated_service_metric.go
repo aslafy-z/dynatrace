@@ -64,7 +64,7 @@ func (me *CalculatedServiceMetric) Schema() map[string]*hcl.Schema {
 		},
 		"metric_definition": {
 			Type:        hcl.TypeList,
-			Required:    true,
+			Optional:    true,
 			MaxItems:    1,
 			Description: "The definition of a calculated service metric",
 			Elem:        &hcl.Resource{Schema: new(CalculatedMetricDefinition).Schema()},
@@ -95,6 +95,9 @@ func (me *CalculatedServiceMetric) MarshalHCL() (map[string]interface{}, error) 
 	properties, err := hcl.NewProperties(me, me.Unknowns)
 	if err != nil {
 		return nil, err
+	}
+	if me.MetricDefinition != nil && me.MetricDefinition.Metric == nil && me.MetricDefinition.RequestAttribute == nil {
+		me.MetricDefinition = nil
 	}
 	return properties.EncodeAll(map[string]interface{}{
 		"entity_id":            me.EntityID,
@@ -127,6 +130,9 @@ func (me *CalculatedServiceMetric) UnmarshalHCL(decoder hcl.Decoder) error {
 	})
 	if me.UnitDisplayName == nil || len(*me.UnitDisplayName) == 0 {
 		me.UnitDisplayName = nil
+	}
+	if me.MetricDefinition == nil {
+		me.MetricDefinition = new(CalculatedMetricDefinition)
 	}
 	return err
 }
