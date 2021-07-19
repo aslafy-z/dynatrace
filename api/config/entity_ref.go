@@ -100,7 +100,7 @@ func (me *EntityRef) MarshalJSON() ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		m["timeframe"] = rawMessage
+		m["id"] = rawMessage
 	}
 	if me.Name != nil {
 		rawMessage, err := json.Marshal(me.Name)
