@@ -1,6 +1,8 @@
 package sharing
 
-import "github.com/dtcookie/hcl"
+import (
+	"github.com/dtcookie/hcl"
+)
 
 // DashboardSharing represents sharing configuration of the dashboard
 type DashboardSharing struct {
@@ -33,7 +35,7 @@ func (me *DashboardSharing) Schema() map[string]*hcl.Schema {
 			Optional:    true,
 			MinItems:    1,
 			MaxItems:    1,
-			Elem:        hcl.Resource{Schema: new(SharePermissions).Schema()},
+			Elem:        &hcl.Resource{Schema: new(SharePermissions).Schema()},
 			Description: "Access permissions of the dashboard",
 		},
 		"public": {
@@ -41,8 +43,41 @@ func (me *DashboardSharing) Schema() map[string]*hcl.Schema {
 			Optional:    true,
 			MinItems:    1,
 			MaxItems:    1,
-			Elem:        hcl.Resource{Schema: new(AnonymousAccess).Schema()},
+			Elem:        &hcl.Resource{Schema: new(AnonymousAccess).Schema()},
 			Description: "Configuration of the [anonymous access](https://dt-url.net/ov03sf1) to the dashboard",
 		},
 	}
+}
+
+// MarshalHCL has no documentation
+func (me *DashboardSharing) MarshalHCL() (map[string]interface{}, error) {
+	var err error
+	props := hcl.Properties{}
+	if props, err = props.EncodeAll(map[string]interface{}{
+		"dashboard_id": me.DashboardID,
+		"enabled":      me.Enabled,
+		"preset":       me.Preset,
+		"permissions":  me.Permissions,
+	}); err != nil {
+		return nil, err
+	}
+
+	if me.PublicAccess != nil && !me.PublicAccess.IsEmpty() {
+		if err = props.Encode("public", me.PublicAccess); err != nil {
+			return nil, err
+		}
+	}
+
+	return props, nil
+}
+
+// UnmarshalHCL has no documentation
+func (me *DashboardSharing) UnmarshalHCL(decoder hcl.Decoder) error {
+	return decoder.DecodeAll(map[string]interface{}{
+		"dashboard_id": &me.DashboardID,
+		"enabled":      &me.Enabled,
+		"preset":       &me.Preset,
+		"permissions":  &me.Permissions,
+		"public":       &me.PublicAccess,
+	})
 }

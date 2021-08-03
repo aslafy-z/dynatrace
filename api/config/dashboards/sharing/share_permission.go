@@ -29,6 +29,25 @@ func (me *SharePermission) Schema() map[string]*hcl.Schema {
 	}
 }
 
+// MarshalHCL has no documentation
+func (me *SharePermission) MarshalHCL() (map[string]interface{}, error) {
+	props := hcl.Properties{}
+	return props.EncodeAll(map[string]interface{}{
+		"id":    me.ID,
+		"type":  me.Type,
+		"level": me.Permission,
+	})
+}
+
+// UnmarshalHCL has no documentation
+func (me *SharePermission) UnmarshalHCL(decoder hcl.Decoder) error {
+	return decoder.DecodeAll(map[string]interface{}{
+		"id":    &me.ID,
+		"type":  &me.Type,
+		"level": &me.Permission,
+	})
+}
+
 type SharePermissions []*SharePermission
 
 func (me *SharePermissions) Schema() map[string]*hcl.Schema {
@@ -37,10 +56,21 @@ func (me *SharePermissions) Schema() map[string]*hcl.Schema {
 			Type:        hcl.TypeList,
 			Optional:    true,
 			MinItems:    1,
-			Elem:        hcl.Resource{Schema: new(SharePermission).Schema()},
+			Elem:        &hcl.Resource{Schema: new(SharePermission).Schema()},
 			Description: "Access permissions of the dashboard",
 		},
 	}
+}
+
+// MarshalHCL has no documentation
+func (me SharePermissions) MarshalHCL() (map[string]interface{}, error) {
+	props := hcl.Properties{}
+	return props.EncodeSlice("permission", me)
+}
+
+// UnmarshalHCL has no documentation
+func (me *SharePermissions) UnmarshalHCL(decoder hcl.Decoder) error {
+	return decoder.DecodeSlice("permission", me)
 }
 
 type PermissionType string
