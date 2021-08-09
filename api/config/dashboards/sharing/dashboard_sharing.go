@@ -73,11 +73,20 @@ func (me *DashboardSharing) MarshalHCL() (map[string]interface{}, error) {
 
 // UnmarshalHCL has no documentation
 func (me *DashboardSharing) UnmarshalHCL(decoder hcl.Decoder) error {
-	return decoder.DecodeAll(map[string]interface{}{
+	if err := decoder.DecodeAll(map[string]interface{}{
 		"dashboard_id": &me.DashboardID,
 		"enabled":      &me.Enabled,
 		"preset":       &me.Preset,
 		"permissions":  &me.Permissions,
 		"public":       &me.PublicAccess,
-	})
+	}); err != nil {
+		return err
+	}
+	if me.PublicAccess == nil {
+		me.PublicAccess = &AnonymousAccess{
+			ManagementZoneIDs: []string{},
+			URLs:              map[string]string{},
+		}
+	}
+	return nil
 }

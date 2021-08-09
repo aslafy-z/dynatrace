@@ -3,6 +3,7 @@ package sharing
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/dtcookie/dynatrace/rest"
 	"github.com/dtcookie/dynatrace/rest/credentials"
@@ -36,6 +37,9 @@ func (cs *ServiceClient) Create(settings *DashboardSharing) (string, error) {
 // Update TODO: documentation
 func (cs *ServiceClient) Update(settings *DashboardSharing) error {
 	_, err := cs.client.PUT(fmt.Sprintf("/dashboards/%s/shareSettings", settings.DashboardID), settings, 201)
+	if err != nil && strings.HasPrefix(err.Error(), "No Content (PUT)") {
+		return nil
+	}
 	return err
 }
 
