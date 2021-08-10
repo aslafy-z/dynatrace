@@ -1,4 +1,4 @@
-module github.com/dtcookie/dynatrace/api/cluster/v2/environments
+module github.com/dtcookie/dynatrace/api/cluster/v2/envs
 
 go 1.16
 

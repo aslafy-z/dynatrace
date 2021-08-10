@@ -1,8 +1,8 @@
 package environments
 
 import (
-	"github.com/dtcookie/dynatrace/api/cluster/v2/environments/quota"
-	"github.com/dtcookie/dynatrace/api/cluster/v2/environments/storage"
+	"github.com/dtcookie/dynatrace/api/cluster/v2/envs/quota"
+	"github.com/dtcookie/dynatrace/api/cluster/v2/envs/storage"
 	"github.com/dtcookie/hcl"
 )
 

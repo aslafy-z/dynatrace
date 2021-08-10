@@ -1,7 +1,7 @@
 package storage
 
 import (
-	"github.com/dtcookie/dynatrace/api/cluster/v2/environments/storage/retention"
+	"github.com/dtcookie/dynatrace/api/cluster/v2/envs/storage/retention"
 	"github.com/dtcookie/hcl"
 )
 
