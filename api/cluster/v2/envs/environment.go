@@ -1,4 +1,4 @@
-package environments
+package envs
 
 import (
 	"github.com/dtcookie/dynatrace/api/cluster/v2/envs/quota"
