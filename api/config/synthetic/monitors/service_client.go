@@ -45,14 +45,18 @@ func (cs *ServiceClient) CreateBrowser(config *BrowserSyntheticMonitorUpdate) (*
 	if err = json.Unmarshal(bytes, &stub); err != nil {
 		return nil, err
 	}
-	attempts := 0
-	for attempts < 30 {
-		if _, err := cs.GetBrowser(stub.ID); err == nil {
-			attempts = 30
-		} else {
-			attempts++
-			time.Sleep(2 * time.Second)
+	successfulAttempts := 0
+	for successfulAttempts < 5 {
+		attempts := 0
+		for attempts < 30 {
+			if _, err := cs.GetBrowser(stub.ID); err == nil {
+				attempts = 30
+			} else {
+				attempts++
+				time.Sleep(2 * time.Second)
+			}
 		}
+		successfulAttempts++
 	}
 
 	return &stub.ID, nil
@@ -76,14 +80,18 @@ func (cs *ServiceClient) CreateHTTP(config *HTTPSyntheticMonitorUpdate) (*string
 	if err = json.Unmarshal(bytes, &stub); err != nil {
 		return nil, err
 	}
-	attempts := 0
-	for attempts < 30 {
-		if _, err := cs.GetHTTP(stub.ID); err == nil {
-			attempts = 30
-		} else {
-			attempts++
-			time.Sleep(2 * time.Second)
+	successfulAttempts := 0
+	for successfulAttempts < 5 {
+		attempts := 0
+		for attempts < 30 {
+			if _, err := cs.GetHTTP(stub.ID); err == nil {
+				attempts = 30
+			} else {
+				attempts++
+				time.Sleep(2 * time.Second)
+			}
 		}
+		successfulAttempts++
 	}
 
 	return &stub.ID, nil
