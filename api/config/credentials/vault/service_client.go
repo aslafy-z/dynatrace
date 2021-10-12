@@ -29,11 +29,11 @@ func NewService(baseURL string, token string) *ServiceClient {
 }
 
 // Create TODO: documentation
-func (cs *ServiceClient) Create(config Credentials) (*api.EntityShortRepresentation, error) {
+func (cs *ServiceClient) Create(config *Credentials) (*api.EntityShortRepresentation, error) {
 	var err error
 	var bytes []byte
 
-	if len(opt.String(config.(*BaseCredentials).ID)) > 0 {
+	if len(opt.String(config.ID)) > 0 {
 		return nil, errors.New("you must not provide an ID within the configuration payload upon creation")
 	}
 
@@ -49,11 +49,11 @@ func (cs *ServiceClient) Create(config Credentials) (*api.EntityShortRepresentat
 }
 
 // Update TODO: documentation
-func (cs *ServiceClient) Update(config Credentials) error {
-	if len(opt.String(config.(*BaseCredentials).ID)) == 0 {
+func (cs *ServiceClient) Update(config *Credentials) error {
+	if len(opt.String(config.ID)) == 0 {
 		return errors.New("the configuration doesn't contain an ID")
 	}
-	if _, err := cs.client.PUT(fmt.Sprintf("/credentials/%s", opt.String(config.(*BaseCredentials).ID)), config, 204); err != nil {
+	if _, err := cs.client.PUT(fmt.Sprintf("/credentials/%s", opt.String(config.ID)), config, 204); err != nil {
 		return err
 	}
 	return nil
@@ -71,7 +71,7 @@ func (cs *ServiceClient) Delete(id string) error {
 }
 
 // Get TODO: documentation
-func (cs *ServiceClient) Get(id string) (Credentials, error) {
+func (cs *ServiceClient) Get(id string) (*Credentials, error) {
 	if len(id) == 0 {
 		return nil, errors.New("empty ID provided for the configuration to fetch")
 	}
@@ -82,32 +82,11 @@ func (cs *ServiceClient) Get(id string) (Credentials, error) {
 	if bytes, err = cs.client.GET(fmt.Sprintf("/credentials/%s", id), 200); err != nil {
 		return nil, err
 	}
-	var baseConfig BaseCredentials
-	if err = json.Unmarshal(bytes, &baseConfig); err != nil {
+	var credentials Credentials
+	if err = json.Unmarshal(bytes, &credentials); err != nil {
 		return nil, err
 	}
-	switch *baseConfig.Type {
-	case CredentialsTypes.Certificate:
-		var config CertificateCredentials
-		if err = json.Unmarshal(bytes, &config); err != nil {
-			return nil, err
-		}
-		return &config, nil
-	case CredentialsTypes.Token:
-		var config TokenCredentials
-		if err = json.Unmarshal(bytes, &config); err != nil {
-			return nil, err
-		}
-		return &config, nil
-	case CredentialsTypes.UsernamePassword:
-		var config UserPasswordCredentials
-		if err = json.Unmarshal(bytes, &config); err != nil {
-			return nil, err
-		}
-		return &config, nil
-	default:
-		return nil, fmt.Errorf("unsupported credential type %v", *baseConfig.Type)
-	}
+	return &credentials, nil
 }
 
 // ListAll TODO: documentation
