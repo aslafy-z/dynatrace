@@ -168,8 +168,11 @@ func (me *BrowserSyntheticMonitorUpdate) UnmarshalHCL(decoder hcl.Decoder) error
 	}
 	me.Locations = decoder.GetStringSet("locations")
 	me.ManuallyAssignedApps = decoder.GetStringSet("manually_assigned_apps")
-	if err := decoder.Decode("tags", &me.Tags); err != nil {
-		return err
+	if _, ok := decoder.GetOk("tags.#"); ok {
+		me.Tags = TagsWithSourceInfo{}
+		if err := me.Tags.UnmarshalHCL(hcl.NewDecoder(decoder, "tags", 0)); err != nil {
+			return err
+		}
 	}
 	if err := decoder.Decode("anomaly_detection", &me.AnomalyDetection); err != nil {
 		return err

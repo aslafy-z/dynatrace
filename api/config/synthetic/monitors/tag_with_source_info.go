@@ -31,6 +31,19 @@ func (me TagsWithSourceInfo) MarshalHCL() (map[string]interface{}, error) {
 	return result, nil
 }
 
+func (me *TagsWithSourceInfo) UnmarshalHCL(decoder hcl.Decoder) error {
+	if result, ok := decoder.GetOk("tag.#"); ok {
+		for idx := 0; idx < result.(int); idx++ {
+			entry := new(TagWithSourceInfo)
+			if err := entry.UnmarshalHCL(hcl.NewDecoder(decoder, "tag", idx)); err != nil {
+				return err
+			}
+			*me = append(*me, entry)
+		}
+	}
+	return nil
+}
+
 // Tag with source of a Dynatrace entity
 type TagWithSourceInfo struct {
 	Source  *TagSource `json:"source,omitempty"` // The source of the tag, such as USER, RULE_BASED or AUTO
@@ -75,6 +88,22 @@ func (me TagWithSourceInfo) MarshalHCL() (map[string]interface{}, error) {
 		result["value"] = *me.Value
 	}
 	return result, nil
+}
+
+func (me *TagWithSourceInfo) UnmarshalHCL(decoder hcl.Decoder) error {
+	if err := decoder.Decode("source", &me.Source); err != nil {
+		return err
+	}
+	if err := decoder.Decode("context", &me.Context); err != nil {
+		return err
+	}
+	if err := decoder.Decode("key", &me.Key); err != nil {
+		return err
+	}
+	if err := decoder.Decode("value", &me.Value); err != nil {
+		return err
+	}
+	return nil
 }
 
 // TagSource The source of the tag, such as USER, RULE_BASED or AUTO

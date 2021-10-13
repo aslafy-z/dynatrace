@@ -48,7 +48,7 @@ func (cs *ServiceClient) CreateBrowser(config *BrowserSyntheticMonitorUpdate) (*
 	successfulAttempts := 0
 	for successfulAttempts < 5 {
 		attempts := 0
-		for attempts < 30 {
+		for attempts < 50 {
 			if _, err := cs.GetBrowser(stub.ID); err == nil {
 				attempts = 30
 			} else {
@@ -83,7 +83,7 @@ func (cs *ServiceClient) CreateHTTP(config *HTTPSyntheticMonitorUpdate) (*string
 	successfulAttempts := 0
 	for successfulAttempts < 5 {
 		attempts := 0
-		for attempts < 30 {
+		for attempts < 50 {
 			if _, err := cs.GetHTTP(stub.ID); err == nil {
 				attempts = 30
 			} else {
